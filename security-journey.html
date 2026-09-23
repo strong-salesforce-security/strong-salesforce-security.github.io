@@ -1,1 +1,542 @@
-abc
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="An illustrative roadmap for stronger Salesforce security, with OOTB controls and explanations of how Guardian can help across seven steps.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Salesforce security — illustrative roadmap</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23293645'/%3E%3Cpath d='M16 5 25 9v7c0 5-4 9-9 12-5-3-9-7-9-12V9Z' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    :root{color-scheme:light;--ink:#283545;--text:#39434d;--muted:#5f6872;--line:#dce1e6;--paper:#fff;--soft:#f4f6f8;--serif:Georgia,'Times New Roman',serif;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+    *{box-sizing:border-box}
+    html{scroll-padding-top:24px}
+    body{margin:0;background:var(--paper);color:var(--text);font:1rem/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1px}
+    a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+    h1,h2,h3,p{margin-top:0}
+    h1,h2{font-family:var(--serif);font-weight:400;color:var(--ink);line-height:1.2}
+    h1{font-size:clamp(2rem,3.4vw,2.8rem);letter-spacing:-.6px;max-width:850px;margin-bottom:12px}
+    h2{font-size:1.9rem;letter-spacing:-.25px;margin-bottom:9px}
+    h3{font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin-bottom:12px}
+    p{margin-bottom:14px}
+    strong{font-weight:650;color:var(--ink)}
+    .shell{max-width:1200px;margin:auto;padding:0 36px}
+    .masthead{border-bottom:1px solid var(--line)}
+    .masthead-inner{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .masthead p{margin:0;font-size:.875rem;color:var(--muted)}
+    .masthead .brand{font-weight:650;color:var(--ink)}
+    .intro{padding-top:34px;padding-bottom:30px}
+    .subtitle{font-family:var(--serif);font-size:1.35rem;color:var(--muted);margin-bottom:16px}
+    .sequence-note{max-width:880px;margin:0;font-size:1rem;line-height:1.65}
+    .layout{display:grid;grid-template-columns:222px minmax(0,1fr);gap:44px;align-items:start}
+    .journey-nav{position:sticky;top:24px;padding-bottom:24px}
+    .journey-nav h2{font-family:var(--sans);font-size:.875rem;font-weight:650;letter-spacing:0;margin:0 0 14px}
+    .journey-nav ol{list-style:none;padding:0;margin:0;position:relative}
+    .journey-nav ol::before{content:'';position:absolute;width:1px;left:16px;top:21px;bottom:23px;background:var(--line)}
+    .journey-nav li{position:relative;margin-bottom:7px}
+    .journey-nav a{display:flex;align-items:center;gap:11px;text-decoration:none;font-size:.9375rem;line-height:1.4;color:var(--muted);padding:8px 6px 8px 0;border-radius:4px}
+    .journey-nav a:hover{color:var(--ink);background:var(--soft)}
+    .journey-nav .number{display:flex;align-items:center;justify-content:center;width:33px;height:33px;flex:none;border:1px solid var(--line);background:white;border-radius:50%;font-size:.8125rem;color:var(--muted);font-variant-numeric:tabular-nums}
+    .journey-nav a[aria-current="step"]{font-weight:650;color:var(--ink)}
+    .journey-nav a[aria-current="step"] .number{background:var(--ink);border-color:var(--ink);color:white}
+    .parallel-note{border-top:1px solid var(--line);padding-top:18px;margin:20px 0 0;color:var(--muted);font-size:.875rem;line-height:1.6}
+    .steps{min-width:0}
+    .step{border-top:1px solid var(--line);padding:27px 0 0;margin-bottom:48px;scroll-margin-top:24px}
+    .step-kicker{font-size:.8125rem;letter-spacing:.7px;color:var(--muted);margin-bottom:9px}
+    .step-intent{margin-bottom:12px;max-width:70ch}
+    .ootb{padding:8px 0 20px}
+    .actions{margin:0;padding-left:21px}
+    .actions li{margin-bottom:10px;padding-left:3px}
+    .actions li:last-child{margin-bottom:0}
+    .implementation{margin-top:21px;padding-top:17px;border-top:1px solid var(--line)}
+    .implementation h4{font-family:var(--sans);font-size:.9375rem;font-weight:650;line-height:1.45;color:var(--ink);margin:0 0 9px}
+    .implementation p{margin:0;line-height:1.65}
+    .implementation p+p{margin-top:14px}
+    .implementation h5{font-family:var(--sans);font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin:23px 0 9px}
+    .implementation h4+h5{margin-top:15px}
+    .guardian{padding:21px 24px;background:var(--soft);border:1px solid var(--line);border-radius:4px}
+    .guardian-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .guardian-heading h3{margin:0}
+    .reference-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9375rem;line-height:1.5;table-layout:fixed}
+    .reference-table caption{text-align:left;color:var(--muted);font-size:.8125rem;margin-bottom:9px}
+    .reference-table th,.reference-table td{padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+    .reference-table thead th{background:var(--soft);color:var(--ink);font-weight:650}
+    .reference-table tbody th{font-weight:600;color:var(--ink)}
+    .reference-table+.reference-table{margin-top:20px}
+    @media(max-width:420px){.reference-table{font-size:.875rem}.reference-table th,.reference-table td{padding:8px}}
+    @media print{.reference-table{font-size:9pt}.reference-table tr{break-inside:avoid}.reference-table thead{display:table-header-group}}
+    .guardian-detail{margin-top:0}
+    .guardian-detail h4{font-family:var(--sans);font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin:21px 0 9px}
+    .guardian-detail h4:first-child{margin-top:0}
+    .guardian-detail p{margin:0 0 14px}
+    .guardian-detail p:last-child{margin-bottom:0}
+    .footer{border-top:1px solid var(--line);padding:20px 0 26px;font-size:.8125rem;color:var(--muted)}
+    .footer .shell{display:block}
+    .footer p{margin:0;max-width:96ch}
+    .skip-link{position:absolute;left:24px;top:-100px;z-index:10;background:white;padding:10px 16px}
+    .skip-link:focus{top:12px}
+    @media(max-width:900px){.shell{padding-left:25px;padding-right:25px}.layout{grid-template-columns:190px minmax(0,1fr);gap:28px}.guardian{padding:18px 20px}.journey-nav a{font-size:.875rem}}
+    @media(max-width:720px){.layout{display:block}.journey-nav{position:static;padding-bottom:23px}.journey-nav ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 14px}.journey-nav ol::before{display:none}.journey-nav li{margin:0}.journey-nav a{padding:6px 0}.parallel-note{margin-top:14px;padding-top:13px}.intro{padding-top:28px;padding-bottom:23px}.step{margin-bottom:36px}h2{font-size:1.75rem}}
+    @media(max-width:420px){.shell{padding-left:19px;padding-right:19px}.masthead-inner{min-height:58px}.journey-nav ol{grid-template-columns:1fr}.journey-nav .number{width:29px;height:29px}.journey-nav a{min-height:44px}.guardian{padding:17px}.guardian-heading{display:block}.intro{padding-top:24px}}
+    /* Reading sizes for the screen; print sizing and layout are unchanged. */
+    @media screen{
+      body{font-size:1.125rem}
+      h1{font-size:clamp(2.25rem,3.4vw,3rem)}
+      h2{font-size:2.125rem}
+      h3,.implementation h4,.implementation h5,.guardian-detail h4{font-size:1.125rem}
+      .masthead p,.journey-nav h2,.parallel-note{font-size:1rem}
+      .subtitle{font-size:1.5rem}
+      .sequence-note{font-size:1.125rem}
+      .journey-nav a{font-size:1.0625rem}
+      .journey-nav .number,.step-kicker,.reference-table caption,.footer{font-size:.875rem}
+      .reference-table{font-size:1rem}
+    }
+    @media screen and (max-width:720px){h2{font-size:2rem}}
+    @media print{@page{size:A4;margin:18mm}body{font-size:10.5pt;color:#111;background:white}.shell{padding:0;max-width:none}.masthead,.journey-nav,.skip-link{display:none}.intro{padding:0 0 20px}h1{font-size:25pt}h2{font-size:19pt}.layout{display:block}.step{break-before:page;margin-bottom:0;scroll-margin-top:0;padding-top:18px}.step:first-child{break-before:auto}.guardian{background:#f5f5f5;border-color:#ccc}.implementation h4,.implementation h5,.guardian h3,.guardian h4{break-after:avoid}.implementation p,.guardian-detail p{orphans:3;widows:3}.actions li{margin-bottom:7px}a{color:inherit;text-decoration:none}}
+    /* Independent, initially collapsed sections for presentation and reference. */
+    .journey-accordion{margin:0 0 10px;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+    .journey-accordion.accordion-guardian{background:var(--soft)}
+    .journey-accordion>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:58px;padding:15px 20px;list-style:none;cursor:pointer;touch-action:manipulation;color:var(--ink);border-radius:4px}
+    .journey-accordion>summary::-webkit-details-marker{display:none}
+    .journey-accordion>summary::marker{content:''}
+    .journey-accordion>summary:hover{background:var(--soft)}
+    .journey-accordion>summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+    .journey-accordion>summary h3{margin:0;font-size:1.125rem;line-height:1.45}
+    .accordion-icon{width:9px;height:9px;flex:none;margin-right:3px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)}
+    .journey-accordion[open]>summary{border-bottom:1px solid var(--line);border-radius:4px 4px 0 0}
+    .journey-accordion[open]>summary .accordion-icon{transform:rotate(225deg)}
+    .accordion-body{padding:20px}
+    .journey-accordion .implementation{margin:0;padding:0;border:0}
+    .journey-accordion .implementation h4{margin:23px 0 9px;font-size:1.125rem}
+    .journey-accordion .implementation>:first-child{margin-top:0}
+    @media(max-width:420px){.journey-accordion>summary{padding:14px 16px}.accordion-body{padding:17px 16px}}
+    @media print{
+      .journey-accordion{margin:14px 0;border:0;background:transparent}
+      .journey-accordion.accordion-guardian{background:transparent}
+      .journey-accordion>summary,.journey-accordion[open]>summary{padding:0 0 9px;min-height:0;border:0;break-after:avoid}
+      .journey-accordion>summary h3,.journey-accordion .implementation h4{font-size:11pt}
+      .accordion-icon{display:none}
+      .accordion-body{padding:0}
+      .guardian-detail h4{break-after:avoid}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#step-1">Skip to the journey</a>
+  <header class="masthead"><div class="shell masthead-inner"><p class="brand">Salesforce security</p></div></header>
+  <main class="shell">
+    <div class="intro">
+      <h1>An illustrative roadmap for stronger Salesforce security</h1>
+      <p class="subtitle">A step-by-step journey</p>
+      <p class="sequence-note"><strong>The seven steps are not a required sequence and can be carried out in parallel.</strong> For example, backup and recovery does not need to wait for encryption. Prioritize activities according to risk, business needs and any implementation dependencies.</p>
+    </div>
+    <div class="layout">
+      <nav class="journey-nav" aria-label="Journey steps">
+        <h2>Journey</h2>
+        <ol>
+          <li><a href="#step-1" aria-current="step"><span class="number">01</span><span>Foundation</span></a></li>
+          <li><a href="#step-2"><span class="number">02</span><span>Authentication</span></a></li>
+          <li><a href="#step-3"><span class="number">03</span><span>Access</span></a></li>
+          <li><a href="#step-4"><span class="number">04</span><span>Monitor &amp; alert</span></a></li>
+          <li><a href="#step-5"><span class="number">05</span><span>Data protection &amp; privacy</span></a></li>
+          <li><a href="#step-6"><span class="number">06</span><span>Backup &amp; archive</span></a></li>
+          <li><a href="#step-7"><span class="number">07</span><span>Governance</span></a></li>
+        </ol>
+        <p class="parallel-note">Begin evidence capture early. Monitoring, field history and backup can progress alongside access hardening.</p>
+      </nav>
+      <div class="steps">
+        <section class="step" id="step-1" aria-labelledby="title-1">
+          <p class="step-kicker">Step 01 of 07</p>
+          <h2 id="title-1">Foundation: Assess posture with Health Check &amp; Security Insights</h2>
+          <p class="step-intent">Establish the scope, record the current settings and assign the first remediation actions.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Inventory the orgs, critical data, external sites, integrations and existing security capabilities.</li>
+            <li>Run <strong>Health Check</strong> against an agreed Salesforce or custom baseline. Record the date, findings and baseline used.</li>
+            <li>Configure Health Check score notifications; the setup and ongoing review are described in Step 7.</li>
+            <li>Prioritize material gaps, test the proposed changes and re-run the assessment. Review Security Center Essentials where available.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<p>List each production org and its business owner, administrator, public sites, critical integrations and sensitive datasets. Include sandboxes and other copies of production data. Record which security features are already configured in each org so that the review starts from actual usage.</p>
+              <p>Review the user list for inactive or no-longer-needed accounts, then inspect profiles and permission-set assignments for unused or unnecessary access. Check ownership of records, scheduled work and integrations before disabling an account or removing an assignment. Use the access-review tools in Step 3 to investigate the grants that remain.</p>
+              <p>In Setup, open <strong>Health Check</strong>, select the Salesforce baseline or an agreed custom baseline, and save the date, score and individual setting results. Health Check compares configuration settings with that baseline: for example, when local passwords expire, the session timeout, browser protections and certificate settings. Work through the flagged settings with the relevant administrators. Record why a setting differs from the baseline and what changing it could affect.</p>
+              <p>Test configuration changes with affected users and integrations before applying them in production, then re-run Health Check. Record the setting changed, the remaining gap and the next action. Configure the automated notifications described in Step 7 so that later score changes reach the people responsible for the org.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Security Center: Inspect permissions and sensitive-data exposure</h4>
+              <p>Connect the supported orgs to <strong>Security Center</strong> and check that the collected data is current. Use <strong>Security Insights</strong> to investigate questions beyond the configuration baseline: how many users can export reports, who has broad administrative permissions, and how widely sensitive fields can be accessed. Review the users and granting configurations behind a finding before deciding which access to remove. Data classification and scoring settings affect how the findings are interpreted.</p>
+              <h4>Guided Risk Assessment: Add business context and authentication observations</h4>
+              <p>Complete the org, authentication and data-protection questions in the <a href="https://help.salesforce.com/s/articleView?id=platform.sc_ext_perform_risk_assessment.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Guided Risk Assessment</a>. Review the resulting report for high-risk settings, broad permissions, data-export capabilities and observed authentication methods. For an assessment using a 90-day lookback, compare the users recorded under SSO with MFA, username/password with MFA, SSO only and username/password only. Reconcile SSO observations with identity-provider evidence before treating a category as proof that a user bypassed MFA.</p>
+              <p>Turn each material finding into a specific change. If too many users can export reports, review the assignments and narrow them in Step 3. If observed login methods do not match the intended MFA policy, investigate the affected login paths in Step 2. Re-run the relevant analysis after remediation.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-2" aria-labelledby="title-2">
+          <p class="step-kicker">Step 02 of 07</p>
+          <h2 id="title-2">Authentication: Secure entry for users, integrations &amp; AI agents</h2>
+          <p class="step-intent">Secure the login and authentication paths used by employees, administrators, integrations and AI agents.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Track the <strong>Salesforce security enforcement roadmap</strong>, check each org’s rollout status and address required authentication, connection, sending-email and report-action changes.</li>
+            <li>Verify <strong>MFA</strong> on applicable interactive login paths, including assurance through the identity provider when using SSO.</li>
+            <li>Use appropriate phishing-resistant authentication for privileged users. Test emergency access and account recovery.</li>
+            <li>Review session timeouts, high-assurance requirements and appropriate login IP restrictions. Test legitimate access before rollout.</li>
+            <li>Review connected apps, OAuth access, integration credentials and AI-agent identities separately from employee login. Remove unused access paths.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<h4>Track enforced changes and local recommendations</h4>
+              <p>Use the <a href="https://help.salesforce.com/s/articleView?id=005317465&amp;language=en_US&amp;type=1" target="_blank" rel="noopener noreferrer">Salesforce security enforcement roadmap</a> to check enforcement separately from recommended local hardening. The published dates below are rollout information, not confirmation of a particular org’s configuration. Check the linked control’s scope, exceptions and org-specific schedule before planning a change.</p>
+              <table class="reference-table"><caption>Published Salesforce Platform enforcement schedule — checked 22 September 2026</caption><thead><tr><th scope="col">Control</th><th scope="col">Published production rollout</th></tr></thead><tbody><tr><th scope="row">Employee MFA and phishing-resistant MFA for privileged users</th><td>Production rollout started 20 July 2026; consult the org’s release-group schedule.</td></tr><tr><th scope="row">High-risk connections</th><td>Connected-app/API enforcement started 24 April 2026.</td></tr><tr><th scope="row">Extended login-anomaly containment</th><td>Enforcement started in early April 2026.</td></tr><tr><th scope="row">Sending-email domain verification</th><td>Production phase 1: 5 May–1 June 2026. Allowlisted domains: 29 June–27 July 2026.</td></tr><tr><th scope="row">Time-based report-action step-up</th><td>Production enforcement started 1 July 2026, staggered over approximately 30 days.</td></tr><tr><th scope="row">Anomalous-report-export step-up</th><td>Production enforcement started 13 July 2026.</td></tr><tr><th scope="row">Transaction Security Policy changes</th><td>Production enforcement started 13 July 2026. Implementation details are in Step 4.</td></tr></tbody></table>
+              <p>For each org, record the applicable control, published status and date, local configuration, remaining action and owner. Resolve any gaps in controls whose rollout has already started. Keep risk-based choices such as additional login restrictions and session settings identified as local recommendations rather than Salesforce-wide enforcement deadlines.</p>
+              <p>Include the identity and integration owners in login and connection tests. For sending-email verification, identify the domains Salesforce sends from and check their verification state. Test report viewing and exports with the affected users so they can complete the required step-up authentication.</p>
+              <h4>Secure employee and administrator login</h4>
+              <p>List the login paths actually used: direct Salesforce login, SSO through the identity provider, mobile access and emergency administrator access. Check how MFA is enforced on each applicable interactive path. For SSO, review the identity provider policy and its exceptions, including users or applications that can still use a different login route.</p>
+              <p>For privileged users, use phishing-resistant authentication supported by the chosen login method. Test account recovery and the emergency access process before tightening restrictions. Keep emergency credentials under controlled access and record their use.</p>
+              <p>Review session timeouts, high-assurance requirements, login hours and login IP restrictions for the relevant user groups. Test office, remote and mobile access before rollout. Distinguish trusted network settings from restrictions that actually prevent login; record the purpose of each setting.</p>
+              <h4>Identify how AI agents authenticate</h4>
+              <p>List each agent, its channel and the systems it calls. For each action, identify whether it runs as the signed-in user, an assigned agent user or another integration identity. Inspect the credentials used by external actions and test revocation. Apply the relevant interactive-login controls to the people using the agent, and manage machine credentials through their supported authentication flow. Review what each identity can see and do in Step 3.</p>
+              <h4>Secure integrations and non-human identities</h4>
+              <p>Inventory connected apps and external client apps, OAuth grants, service accounts, named and external credentials, and active outbound connections. Give each integration an owner and a stated business purpose. Identify the Salesforce records and operations it needs, then narrow its permissions and OAuth scopes accordingly.</p>
+              <p>Give each system-to-system integration a dedicated identity and only the object, field and operation permissions it needs. For API-only integrations, use the <strong>Salesforce Integration user license</strong> and <strong>Minimum Access – API Only Integrations</strong> profile where appropriate, then grant the required access through permission sets. API-only access restricts the channel; the assigned permissions still determine what the integration can do. Review any use of a full System Administrator profile and replace unnecessary privileges with specific grants. Follow the <a href="https://help.salesforce.com/s/articleView?id=sf.integration_user.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">integration-user setup guidance</a>.</p>
+              <p>Review apps that act on behalf of an interactive user separately from unattended integrations. Record who manages secrets, certificates and refresh tokens, and test credential rotation and revocation with the integration owner. Review the destination and downstream handling of exported data. Remove abandoned connections and unused grants after checking dependencies.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Use Event Monitoring and Transaction Security Policies for login controls</h4>
+              <p>Create <strong>LoginEvent Transaction Security Policies</strong> for the conditions the organization wants to control, such as login country, source IP or session assurance. Select a supported notification, block or MFA action and test both expected and prohibited login scenarios. For example, require an MFA challenge on a supported UI login when the selected conditions indicate insufficient session assurance. Follow the <a href="https://help.salesforce.com/s/articleView?id=sf.enhanced_transaction_security_policy_types.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">event conditions and supported actions</a>; the wider policy setup and TSP Accelerator are covered in Step 4.</p>
+              <h4>Use Security Center Security Mesh to investigate impossible travel</h4>
+              <p>Use the documented <strong>impossible-travel detection</strong> in <a href="https://www.salesforce.com/blog/security-mesh/" target="_blank" rel="noopener noreferrer">Security Mesh</a> to flag account access from distant locations within an implausibly short interval. Review the related Salesforce activity and account for VPN or proxy effects before deciding whether the account is compromised. Step 4 covers the Security Center, Data 360 and external-feed setup for cross-system investigation.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-3" aria-labelledby="title-3">
+          <p class="step-kicker">Step 03 of 07</p>
+          <h2 id="title-3">Access: Control what users and agents can see and do</h2>
+          <p class="step-intent">Move toward a minimum-privilege model and establish the field history needed for investigation.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Start with <strong>an appropriate minimum profile</strong>, then grant access through task-based permission sets and permission set groups.</li>
+            <li>Review <strong>View All Data / Modify All Data</strong>, object-wide <strong>View All / Modify All</strong>, field permissions, sharing and export access separately.</li>
+            <li>Secure <strong>guest and external-user access</strong>. Review integrations, custom code and automation, and test required tasks and prohibited actions.</li>
+            <li>Remove redundant grants and unused assignments. Enable history for selected business fields; extended retention and wider coverage are covered under <strong>Field Audit Trail</strong> in “How Guardian helps” below.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<h4>Migrate sales users to minimum privilege</h4>
+              <p>Start with the work a sales user must perform: create and convert leads, maintain opportunities, view the right accounts, run reports and carry out approved exports. List the required objects, fields and records for each task. Include managers and specialist sales roles so that their additional needs are explicit.</p>
+              <p>Capture the existing profiles, permission sets, permission set groups, roles, sharing rules and assignments before making changes. Use an appropriate minimum profile, such as <strong>Minimum Access – Salesforce</strong>, and check its actual grants. Preserve the required login settings, page layouts, default apps and record types. Build task-based permission sets and combine them into groups for each sales role, following Salesforce’s <a href="https://admin.salesforce.com/blog/2026/the-salesforce-admins-guide-to-profiles-and-permissions" target="_blank" rel="noopener noreferrer">profile and permission guidance</a>.</p>
+              <p>Use the free <strong><a href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FeF99UAF" target="_blank" rel="noopener noreferrer">User Access and Permissions Assistant (UAPA)</a></strong> from Salesforce Labs to analyze who has a permission and how it is granted, report on broad access, and convert profiles into editable permission sets. Follow the <a href="https://help.salesforce.com/s/articleView?id=platform.perm_install_uapa.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">installation and Tooling API setup</a> in a sandbox first. Review the converted grants against the sales tasks; copying existing permissions does not remove excess access.</p>
+              <p>Review <strong>View All Data</strong> and <strong>Modify All Data</strong>, object-wide <strong>View All / Modify All</strong>, broad field access, export permissions and API access. Trace each permission back to every profile, permission set or group that grants it. Salesforce permissions are cumulative: changing the profile will leave grants from other assignments in place. A <a href="https://help.salesforce.com/s/articleView?id=platform.perm_set_groups_muting.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">muting permission set</a> affects its own group; it does not cancel the same permission granted elsewhere.</p>
+              <p>Design record access through organization-wide defaults, ownership, roles, teams and sharing rules according to the sales process. Check which records a manager needs and how that access is granted. Review field permissions separately, including confidential fields that should stay inaccessible in reports and API responses. Keep exceptional export or administrative access in separate, justified assignments.</p>
+              <p>Pilot the proposed model with representative sales users and managers in a sandbox. Test lead conversion, opportunity updates, report access and approved exports, as well as attempts to view another team’s restricted records or sensitive fields. Fix each missing permission narrowly, retain a rollback route and expand the migration in groups. Update provisioning so that a role change removes obsolete assignments as well as adding the new ones.</p>
+              <h4>Review field access and permission dependencies</h4>
+              <p>Open <strong>Setup → Object Manager → select an object → Field Access</strong>, then select a sensitive field. Use the <a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_field_access.htm&amp;release=262&amp;type=5" target="_blank" rel="noopener noreferrer">Summer ’26 Field Access Summary</a> to inspect read and edit grants across permission sets, permission set groups and profiles. Open the granting configuration to make changes. Check the affected users and their record access as well; a summary of configured field grants does not establish every route through which data can be accessed.</p>
+              <p>When changing user permissions, object permissions or assigned apps in the enhanced profile interface, review the additional <a href="https://help.salesforce.com/s/articleView?id=release-notes.rn_permissions_dependencies_modal.htm&amp;release=262&amp;type=5" target="_blank" rel="noopener noreferrer">permission-dependency changes</a> surfaced during the save process. Check the resulting access before continuing the migration, including broad permissions such as View All Fields. Keep the intended change and any dependent changes together in the change record.</p>
+              <h4>Automate assignment and removal with User Access Policies</h4>
+              <p>Use <a href="https://help.salesforce.com/s/articleView?id=sf.perm_user_access_policies.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">User Access Policies</a> to apply a defined set of grant or revoke actions. For a migration, run a manual policy against a reviewed set of users. For ongoing provisioning, configure an active policy to run on user creation or update, with criteria such as role or department. Start with a small group and inspect the policy’s recent access changes.</p>
+              <p>Define revocation actions for role changes and departures as well as grants for new duties. Do not assume that leaving a policy’s matching criteria automatically removes earlier assignments. Review policy order: when multiple active policies match, the one with the lowest Order value applies. Test new users, movers and leavers, including exceptions and users who already have direct assignments.</p>
+              <h4>Secure guest and external-user access</h4>
+              <p>Inventory every public site and domain, its guest user identity, owner and business purpose. For each site, list the records, fields, files and actions that should be public. Disable obsolete sites and remove public links that no longer serve an approved purpose.</p>
+              <p>For supported sites, open <strong>Setup → Guest User Sharing Rule Access Report</strong> and review each site’s sharing rules and exposed objects, records and fields. Follow the <a href="https://help.salesforce.com/s/articleView?id=networks_guest_user_access_verification.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">guest-access report guidance</a> when interpreting counts and omitted objects. Review guest object and field permissions, sharing-rule criteria, user-information visibility and ownership of guest-created records. Check public file links and content distribution separately.</p>
+              <p>Test the site in a clean browser session with no authenticated user. Check that the intended public content works and that confidential test records, fields, downloads and actions remain inaccessible. Include direct links to known test records and files within the agreed test scope. Review guest-accessible Apex, pages, components and Flows for server-side authorization.</p>
+              <p>Review authenticated customer and partner users separately. Test with users from two different customer or partner accounts to check that each sees only the records and files intended for them. Include delegated administration and any deliberate cross-account access. Re-run affected checks after changing site content, sharing rules, fields, files or custom code.</p>
+              <h4>Secure custom development and automation</h4>
+              <p>List the Apex, Visualforce, Lightning components, Flows and package entry points that read sensitive data or perform significant actions. Identify the caller, execution identity, sharing behavior and database access mode, including the Apex API version. Check record sharing and object and field permissions separately, using the current <a href="https://developer.salesforce.com/docs/platform/lwc/guide/apex-security.html" target="_blank" rel="noopener noreferrer">Salesforce secure Apex guidance</a>.</p>
+              <p>Review query construction, input validation, credentials, outbound destinations and sensitive values written to logs. Test required operations and denied operations with ordinary users, guests and integration identities where relevant. Include bulk updates and failure paths so that error handling does not bypass access checks or repeat unintended actions.</p>
+              <h4>Constrain agent actions and data access</h4>
+              <p>For each agent action, list the objects, fields, records and operations it needs. Review the permissions of the executing identity and the authorization checks in any invoked Flow, Apex or API. For example, a sales agent that summarizes an opportunity should not also receive unrestricted customer-data export or bulk-delete authority.</p>
+              <p>Test requests to access another customer’s records, retrieve a restricted field or perform an unapproved action. Confirm that the underlying permissions and action implementation deny the request; a conversational instruction alone is not an access control. Require human confirmation for the material actions selected by the business, and test the action’s failure and retry behavior.</p>
+              <h4>Remove obsolete privileged access and begin field history</h4>
+              <p>Identify administrators and privileged service accounts from their effective permissions. Remove unused grants, give temporary exceptions an end date and test what happens when someone changes roles or leaves. Include direct assignments, provisioning failures, active sessions and connected-app tokens in that review.</p>
+              <p>Enable available field history for the business fields needed to investigate changes and record when capture begins. Choose fields such as an approval status, account ownership or a sensitive commercial value according to the actual process. Make a controlled change and inspect the resulting history. Plan longer retention and wider coverage in the Guardian section below.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Investigate access with Security Center</h4>
+              <p>Use <strong>Who Sees What Explorer</strong> and the relevant <strong>Security Insights</strong> analysis to investigate access before the migration and inspect it again afterward. Native access summaries and UAPA help administrators inspect and change grants; Security Center adds posture analysis, visibility across connected orgs and selected change alerts for continued oversight.</p>
+              <p>After establishing the intended access, configure the permission-drift alerts described in Step 7 to identify later high-risk assignments.</p>
+              <h4>Configure Field Audit Trail</h4>
+              <p>Select supported objects and fields based on the changes the business needs to investigate. Enable tracking, record the capture start date and configure the applicable history retention policy, including archive timing, access and retention. Make a controlled change and retrieve the history through the supported interface. Check archived-history retrieval once the archive process has run.</p>
+              <p><strong>Field Audit Trail</strong> covers selected fields from the time tracking is enabled, with old and new values where supported. It cannot supply earlier changes. See Step 4 for using field history in an investigation and the separate evidence needed for historical report contents.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-4" aria-labelledby="title-4">
+          <p class="step-kicker">Step 04 of 07</p>
+          <h2 id="title-4">Monitor &amp; alert: Detect threats and block risky data exports</h2>
+          <p class="step-intent">Monitor security, application performance and adoption; investigate suspicious activity and apply controls to risky exports.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Review available <strong>Login History, Setup Audit Trail and field history</strong>. Record what they capture and how long it is available.</li>
+            <li>Restrict unnecessary report export and API access. Document activity that the available logs cannot establish.</li>
+            <li>Assign review, investigation and escalation responsibilities. Preserve relevant evidence and rehearse a response.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<p>Write down the questions an investigator needs to answer: who logged in, which security settings changed, which tracked business values changed, and what evidence exists for suspected export activity. Match each question to the logs available in the org. Record their coverage, collection dates and retention limits.</p>
+              <table class="reference-table"><caption>Native audit history</caption><thead><tr><th scope="col">Source</th><th scope="col">Available history and action</th></tr></thead><tbody><tr><th scope="row"><a href="https://help.salesforce.com/s/articleView?id=admin_monitorsetup.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Setup Audit Trail</a></th><td>Download the past <strong>180 days</strong> of configuration history. The Setup page displays the 20 most recent changes. Retain required records before the 180-day expiry.</td></tr><tr><th scope="row"><a href="https://help.salesforce.com/s/articleView?id=sf.users_login_history.htm&amp;language=en_US&amp;type=0" target="_blank" rel="noopener noreferrer">Login History</a></th><td>Download the past <strong>6 months</strong> of login records, including API logins. Store the required history before it leaves that window.</td></tr></tbody></table>
+              <p>Use the field history configured in Step 3 to investigate changes to selected business fields. Correlate the relevant record, field, actor and time with available activity evidence. Protect exported logs and history because they can contain user identifiers and details about business activity.</p>
+              <p>Define who investigates an alert, preserves the relevant records and authorizes actions such as revoking a session or disabling an integration. Walk through a controlled scenario with the response team, using the logs they would actually have. Record missing evidence and the next source to consult.</p>
+              <p>If an investigation requires the exact contents of an earlier report or export, preserve that output and its definition or filters at the time. Field history can help explain tracked changes, but it does not capture the earlier report’s full membership or output. A later report run and Field Audit Trail alone cannot establish precisely what the earlier report contained.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Enable the required event collection</h4>
+              <table class="reference-table"><caption>Choose the event source for the investigation</caption><thead><tr><th scope="col">Source</th><th scope="col">Operational use</th></tr></thead><tbody><tr><th scope="row">Event Log Files (ELF)</th><td>Downloadable activity files, with daily and supported <a href="https://developer.salesforce.com/docs/platform/api-rest/guide/event-log-file-hourly-overview.html" target="_blank" rel="noopener noreferrer">hourly generation</a>. Collect the files and account for processing delays.</td></tr><tr><th scope="row">Event Log Objects (ELO)</th><td><a href="https://help.salesforce.com/s/articleView?id=sf.real_time_em_event_log_objects.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Queryable event records</a>, separate from streaming. Check event coverage, availability delay and source retention.</td></tr><tr><th scope="row">Real-Time Event Monitoring (RTEM)</th><td>Supported event streams and associated storage for monitoring and response. Configure storage and streaming separately.</td></tr></tbody></table>
+              <p>In <strong>Event Manager</strong>, inspect the event types needed for the investigation scenarios. Check <strong>RTEM storage and streaming separately</strong> and enable the missing settings for those events. Provisioning alone does not establish that the required events are being stored. Generate a safe test activity and check that the expected record reaches the selected storage or subscriber.</p>
+              <h4>Start with the prebuilt Event Monitoring analytics dashboards</h4>
+              <p>Event Monitoring provides prebuilt analytics for <strong>security, application performance and user adoption</strong>. Enable CRM Analytics and complete the setup for the dashboard offering you plan to use. Confirm that the relevant event data is available and that the people reviewing it have the required access.</p>
+              <p>The <strong>Event Monitoring Analytics app</strong> includes <a href="https://help.salesforce.com/s/articleView?id=sf.bi_app_admin_wave_dashboards.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">prebuilt dashboards</a> such as User Logins, Login-As, Report Downloads, API, Lightning Performance and Lightning Adoption. Start with User Logins and Report Downloads to examine who is accessing the org and exporting reports. Use the performance and adoption views to identify slow interactions and understand how the application is being used.</p>
+              <p><strong>Event Log Objects Analytics</strong> adds dashboards for <strong>Threats &amp; Access</strong>, <strong>Performance &amp; Health</strong>, and <strong>User Behavior &amp; Adoption</strong>. Use them to investigate security activity, troubleshoot Lightning/Apex/API performance, and examine usage patterns and user journeys. Follow Salesforce’s <a href="https://www.salesforce.com/blog/event-monitoring-analytics-dashboards/" target="_blank" rel="noopener noreferrer">dashboard overview and setup guidance</a>. Filter to a known user and time period, inspect the underlying activity and check the data’s freshness before interpreting a trend.</p>
+              <h4>Retain activity for historical analysis</h4>
+              <p>Check generation and retrieval of the required <strong>Event Log Files (ELF)</strong> and access to supported <strong>Event Log Objects (ELO)</strong>. Record the source, coverage, collection frequency and retention for each. Set up regular ingestion into an operated SIEM, an appropriately persisted CRM Analytics dataset or another approved historical store.</p>
+              <p>For an ELO connection through Data Cloud / Data 360, confirm the supported connector, the actual events ingested and the destination retention settings. A connection or dashboard alone does not establish long-term storage. Assign ownership of collection failures, retries and access to the retained data, then retrieve an older event through the analyst’s normal workflow.</p>
+              <h4>Review Threat Detection events</h4>
+              <p>Use <a href="https://help.salesforce.com/s/articleView?id=xcloud.real_time_em_threat_detection.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Threat Detection</a> to investigate credential stuffing, session hijacking, report and API anomalies, and supported guest-user and login anomalies. Review the event’s context before treating it as a confirmed incident. Configure supported notifications, Transaction Security Policies or event-triggered Flows, and assign an investigator. Detection and response are separate: an anomaly event does not mean every suspicious action was automatically blocked.</p>
+              <h4>Correlate signals with Security Mesh</h4>
+              <p>Use <a href="https://www.salesforce.com/blog/security-mesh/" target="_blank" rel="noopener noreferrer">Security Mesh</a> in <strong>Security Center</strong> with <strong>Data 360</strong> to bring together supported Salesforce and external signals. The documented sources include RTEM, Okta ISPM user data, CrowdStrike endpoint data and DigitSec scanning data. Connect the relevant feeds and check collection, identity matching and timestamps before relying on a combined view.</p>
+              <p><strong>Illustrative correlation:</strong> CrowdStrike flags a compromised endpoint. Okta ISPM supplies identity context, and Salesforce RTEM shows a large report export during the same period. Match the identity, endpoint and timing to investigate whether the export is associated with that compromise. The combined view helps the responder assess the Salesforce activity alongside the endpoint finding; the correlation still needs to be configured and validated.</p>
+              <p>If the SOC works in a SIEM, define an integration to send the supported findings and relevant context into its investigation workflow, and validate the available export or API path. Include the matched identity, affected org, time window and references to supporting events where available. Treat that delivery as integration work, rather than assume that Security Mesh automatically forwards enriched findings. Retain the underlying events needed to investigate the conclusion.</p>
+              <h4>Transaction Security Policies</h4>
+              <p>Implement <strong>Transaction Security Policies (leverage the <a href="https://www.salesforce.com/blog/introducing-transaction-security-policy-accelerator/" target="_blank" rel="noopener noreferrer">TSP Accelerator from Salesforce Labs</a>)</strong>. Select policies for the risks being addressed, such as inappropriate bulk exports or unexpected API activity. Review each template’s event conditions, supporting components and available actions in a sandbox. Adjust thresholds and exceptions to the organization’s normal workloads.</p>
+              <p>Review the <a href="https://help.salesforce.com/s/articleView?id=005321565&amp;language=en_US&amp;type=1" target="_blank" rel="noopener noreferrer">2026 TSP enhancements</a> with the administrators who manage policies. They need <strong>Modify Transaction Security Policy</strong> together with <strong>Customize Application</strong>; policy-management actions in the UI also require step-up authentication when the authentication period has expired.</p>
+              <p>Check whether the default ReportEvent policy has been deployed or enabled in the org. It challenges internal-user report exports through the UI when they exceed 10,000 records; it is not an API-export policy. Existing ReportEvent policies and edits to the default affect automatic deployment or enabling, so inspect the actual configuration. The policy remains editable after enforcement.</p>
+              <p>Test both an approved activity and the activity the policy is intended to catch. Confirm alert delivery and the actual challenge or blocking behavior supported by the event and access path. Identify the responder and the procedure for disabling or correcting a disruptive policy before rolling it out. Review early results with the affected business and integration owners.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-5" aria-labelledby="title-5">
+          <p class="step-kicker">Step 05 of 07</p>
+          <h2 id="title-5">Data protection &amp; privacy: Protect sensitive data across its lifecycle</h2>
+          <p class="step-intent">Identify and protect sensitive data, limit its use and copies, and carry out approved privacy and retention decisions.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Classify sensitive fields and datasets with their owners. Reduce unnecessary collection, access and exports.</li>
+            <li>Limit sandbox and test-data exposure. Review copies, integrations and downstream uses of sensitive information.</li>
+            <li>Define retention, deletion and exception requirements. Establish how privacy requests are verified and fulfilled.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<h4>Identify sensitive data and reduce unnecessary copies</h4>
+              <p>Work with data owners to identify sensitive fields, files and free text. Record the purpose of collecting each category, who needs access and where the data is copied or exported. Include integrations, downloaded reports and test environments. Use the findings to narrow access and remove unnecessary collection or copies.</p>
+              <h4>Review sensitive data used by AI agents</h4>
+              <p>Map the records, files and knowledge sources an agent can retrieve, along with the prompts, outputs, logs and external tools that may receive the information. Remove unnecessary sensitive data from those paths and review access to retained conversations and logs. Test whether a request or malicious instruction in retrieved content can cause confidential information to be disclosed to the wrong person or destination.</p>
+              <h4>Secure sandboxes and test data</h4>
+              <p>Define the records and relationships needed for testing before refreshing or seeding a sandbox. Use synthetic data where it supports the test. When production data is needed, decide how it will be protected and limit access until that work is complete.</p>
+              <p>Review outbound email, notifications, scheduled jobs and integrations in the refreshed environment. Prevent tests from contacting real customers or sending production information to an unintended destination. Check files, attachments and free-text content as well as structured fields. Test that the protected dataset still supports the intended business workflows.</p>
+              <h4>Handle requests about personal data</h4>
+              <p>Define how a request is received, how the requester’s identity is checked and who approves the action. Locate the relevant records across the org, integrations, exports and archives. Carry out the approved access, deletion or anonymization action, record any retained data and the reason, and check that downstream teams complete their part. Include backup handling in the procedure so that a later restore does not silently undo a completed privacy action.</p>
+              <h4>Apply retention and deletion decisions</h4>
+              <p>Document how long each data category is needed, what triggers removal and which exceptions require retention. Include holds, downstream copies and archived data in the decision. Test deletion or anonymization on representative records so that required relationships and business processes are understood before production changes.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Classify fields and inspect their contents</h4>
+              <p>Use <strong>Security Center Data Classification</strong> to find unclassified fields and apply agreed sensitivity or compliance labels in bulk. These labels describe field metadata. Follow the <a href="https://www.salesforce.com/platform/security-center/" target="_blank" rel="noopener noreferrer">Security Center classification guidance</a> and have data owners review the proposed labels.</p>
+              <p>Run <strong>Data Detect</strong> over the selected scope to find sensitive values that field names or existing labels may miss. Review matches and false positives with data owners, reconcile the classification labels, and assign a handling decision: narrow access, remove unnecessary data, mask a test copy or include the field in an encryption policy. Scan findings inform those decisions; a clean scan does not prove that every value is non-sensitive. See <a href="https://www.salesforce.com/platform/shield/" target="_blank" rel="noopener noreferrer">Data Detect capabilities</a>.</p>
+              <h4>Platform Encryption</h4>
+              <p><strong>Platform Encryption protects data at rest.</strong> Field-level encryption operates at the application tier; DBE protects the transactional database at the data tier. TLS handles transport protection separately. It does not provide in-memory encryption or replace access controls. See <a href="https://help.salesforce.com/s/articleView?id=xcloud.security_shield_pe_fundamental_concepts.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Platform Encryption concepts</a>.</p>
+              <p>Identify the stores and fields that need protection and assign responsibility for keys, rotation and recovery. For eligible <strong>Database Encryption (DBE)</strong>, follow the <a href="https://help.salesforce.com/s/articleView?id=xcloud.security_pe_tle_set_up_database_encryption.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">database encryption setup</a>, test the planned change and enable encryption through the supported settings. Track processing of existing data through completion and check the resulting coverage.</p>
+              <p>For field-level encryption decisions, run <a href="https://help.salesforce.com/s/articleView?id=platform.shield_ext_pe_analyzer.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Encryption Analyzer</a> for the applicable fields and review effects on queries, reports, automation and integrations. Treat field-level encryption and DBE as separate configuration decisions. Encryption does not remove an authorized user’s ability to read or export data.</p>
+              <h4>Data Mask &amp; Seed</h4>
+              <p>Data Mask changes the selected <strong>underlying sandbox values</strong> through replacement, scrambling or deletion; it is not a screen-only filter. Masked values cannot be unmasked by toggling a display setting. The process runs within Salesforce and does not alter production data. See the <a href="https://help.salesforce.com/s/articleView?id=000396214&amp;language=en_US&amp;type=1" target="_blank" rel="noopener noreferrer">Data Mask mechanics</a> and <a href="https://developer.salesforce.com/blogs/2020/05/data-mask-protect-sensitive-data-when-testing-apps" target="_blank" rel="noopener noreferrer">platform-native processing guidance</a>.</p>
+              <p>Configure masking and seeding around the test scenarios and relationships the team needs. Keep developer and tester access restricted until the masking job completes. Inspect representative records, related data and areas outside the selected masking scope, then check that the intended tests still work.</p>
+              <h4>Privacy Center: Manage retention and privacy requests</h4>
+              <p>Use <strong>Privacy Center</strong> to configure data-management policies for supported deletion, masking and retention actions. Start with a limited set of objects and test the record-selection criteria, related records, exceptions and holds. Schedule the policy and review its job results, including records that were skipped or failed. Follow the <a href="https://help.salesforce.com/s/articleView?id=xcloud.about_privacy_center.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Privacy Center implementation guidance</a>.</p>
+              <p>For an approved individual request, configure and test the relevant <strong>Right to Be Forgotten</strong> or <strong>portability</strong> policy. Confirm that it finds the intended person’s records and that the output or deletion matches the approved scope. Track remaining work in connected systems and archives separately; a completed Salesforce job does not establish that every copy has been handled.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-6" aria-labelledby="title-6">
+          <p class="step-kicker">Step 06 of 07</p>
+          <h2 id="title-6">Backup &amp; archive: Back up, restore and archive your data</h2>
+          <p class="step-intent">Back up data and configuration for recovery, and archive inactive records that must remain available under the retention policy.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Document <strong>past issues, failure scenarios and recovery options</strong>.</li>
+            <li>Map the data, files, metadata and relationships needed to recover the service.</li>
+            <li>Assess the available export or backup approach and document coverage gaps, retention and the restore procedure.</li>
+            <li>Identify inactive records to archive and define their retention, retrieval and access requirements.</li>
+            <li>Run a safe recovery exercise and verify data integrity, relationships, access and required business behavior.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<h4>Separate backup and archive requirements</h4>
+              <p>A backup provides a recovery copy for unwanted deletion, corruption or change. An archive retains selected inactive records outside the live workload for approved business or retention needs. Define both requirements: which previous state must be recoverable, and which inactive records must remain retrievable. Apply the privacy and retention decisions from Step 5 to both copies.</p>
+              <p><strong>Document past issues, failure scenarios and recovery options.</strong> Review known operational problems with the administrators and business teams, then list plausible scenarios such as an accidental bulk deletion, an integration overwriting good data, a faulty release or the loss of access to a critical dependency. For each scenario, identify the affected process and the records, files, configuration and relationships needed to restore it.</p>
+              <p>List the recovery options available for that scenario: supported undelete, a retained data export and re-import, a previous metadata version, an existing backup service or reconstruction from an authoritative upstream system. Record what each option covers, how far back it can reach, its dependencies and any manual work required. Check whether the option remains usable when the affected integration or identity service is unavailable.</p>
+              <p><strong>Data Export:</strong> generate and retain CSV exports manually or on a supported weekly/monthly schedule. Select the required files and content as part of the export, download the output and protect it. Delivery can be delayed, and the export is not a complete configuration backup or an automatic restore process. Document how records and relationships would be rebuilt from it. See <a href="https://help.salesforce.com/s/articleView?id=sf.admin_exportdata.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Export Backup Data</a>.</p>
+              <p><strong>Recycle Bin:</strong> retained deleted items can be restored during the 15-day window. After that, Salesforce schedules them for permanent deletion without guaranteeing the exact purge time. Emptying the bin or permanently deleting an item can remove the option sooner. This does not recover ordinary overwritten field values. See <a href="https://help.salesforce.com/s/articleView?id=xcloud.recycle_bin_manage.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Recycle Bin behavior</a>.</p>
+              <p>Choose a representative scenario and rehearse recovery in a suitable test environment. Follow the restore procedure, check relationships and access, and confirm that automation and integrations behave correctly after recovery. Record elapsed time, missing items and manual corrections. Use those findings to improve the procedure and identify gaps in the available recovery options.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Backup &amp; Recover: Configure the backup</h4>
+              <p>In <strong>Backup &amp; Recover</strong>, configure the supported data and metadata scope, schedules, retention, access and failure notifications. Complete the first backup and inspect exclusions or failed items against the recovery scenarios. Assign any uncovered data, files or configuration to another recovery option.</p>
+              <h4>Detect unusual deletions and modifications</h4>
+              <p>Configure <strong><a href="https://help.salesforce.com/s/articleView?id=platform.backup_recover_o_smart_alerts_overview.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Smart Alerts</a></strong> for selected objects to flag unusual deletion or modification volumes. Choose useful thresholds or statistical-outlier rules, set the recipients and review alerts against the backup comparison. Statistical detection depends on the observed change pattern and a new backup; it is not an immediate block on a deletion.</p>
+              <p>Route a suspected bulk deletion to the response owner identified in Step 4. Compare the affected records and timing with available activity evidence, decide whether to contain the source of the change, and select the appropriate recovery option.</p>
+              <h4>Backup &amp; Recover: Restore a representative scenario</h4>
+              <p>Use a completed backup to rehearse one of the documented scenarios in a suitable test environment. Check the restore scope, relationships, ownership and business behavior, then record the time and manual work involved. Include the backup operator and the relevant application or integration owners so the procedure covers the dependent work.</p>
+              <h4>Archive: Retain and retrieve inactive records</h4>
+              <p>Define which inactive records can leave the live org, how long they must remain available and who needs to retrieve them. Check related records, reporting needs and downstream dependencies before running archive jobs. Test retrieval of representative archived information and document how it fits into retention and recovery procedures.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="step" id="step-7" aria-labelledby="title-7">
+          <p class="step-kicker">Step 07 of 07</p>
+          <h2 id="title-7">Governance: Detect drift and maintain agreed controls</h2>
+          <p class="step-intent">Use automated notifications and access reviews to identify configuration changes, permission drift and failed protection jobs.</p>
+          <details class="journey-accordion accordion-ootb">
+            <summary><h3>OOTB controls</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+<ul class="actions">
+            <li>Configure <strong>automated Health Check score notifications</strong> and investigate the settings behind a reported change.</li>
+            <li>Recertify access, remove unused identities and grants, and review expiring exceptions.</li>
+            <li>Re-test affected controls after releases, new integrations, schema changes, sandbox refreshes and changes to business processes.</li>
+            <li>Repeat response and recovery exercises. Report verified closure, stale evidence and unresolved gaps.</li>
+          </ul>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-implementation">
+            <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="implementation">
+<h4>Configure automated Health Check score notifications</h4>
+              <p>Open <strong>Setup → Health Check</strong> and configure the notification recipients. Use <strong>Notify all System Admins</strong> and/or add the relevant users and email addresses under <strong>Recipients</strong>, then save. The emails bring score changes to the administrators and security team without requiring them to repeatedly open the page. Salesforce’s <a href="https://help.salesforce.com/s/articleView?id=xcloud.security_health_check_notifications.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">notification guidance</a> describes weekly alerts when the score decreases; do not treat them as immediate detection of every configuration change. Confirm delivery and review the changed settings against the selected baseline.</p>
+              <h4>Review access and recheck controls after change</h4>
+              <p>Set review dates for Health Check findings, privileged access, guest sites, integrations and temporary exceptions. Assign each recurring task to a named team or owner. Keep the actions in the same list used for the initial assessment, with enough detail to show what changed and what still needs attention.</p>
+              <p>Build the relevant checks into changes the team already makes. Recheck field-history coverage when fields or business processes change; a public-site release needs guest-access tests; a sandbox refresh needs data protection and outbound-connection checks. Revisit recovery procedures when objects, files, integrations or business processes change. After changing an agent’s actions, retrieval sources or executing identity, repeat the unauthorized-access and data-disclosure scenarios from Steps 3 and 5.</p>
+              <p>Review User Access Policy results after changes to roles, departments or provisioning rules. Check both newly granted access and removal of obsolete assignments, including exceptions. Revisit the Step 2 enforcement roadmap and update each org’s status when Salesforce changes a rollout or the local configuration changes.</p>
+              <p>Review recurring failures and overdue actions with the teams responsible for them. Repeat response and recovery exercises using current systems and contacts. During an org migration or consolidation, carry forward required permissions, retained logs, field history and recovery procedures, then check their behavior in the destination org.</p>
+              </div>
+            </div>
+          </details>
+          <details class="journey-accordion accordion-guardian">
+            <summary><h3>How Guardian helps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+            <div class="accordion-body">
+              <div class="guardian-detail">
+<h4>Security Center: Alert on permission drift</h4>
+              <p>Configure <strong>Security Insights alerts</strong> for high-risk system permissions. For example, select <strong>Modify All Data</strong> and the rule for a system permission assigned to users. Also review the rule for permissions assigned to profiles, permission sets or permission set groups. Follow the <a href="https://help.salesforce.com/s/articleView?id=platform.sc_ext_create_alerts.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">alert setup guidance</a> and subscribe the relevant reviewers.</p>
+              <p>When an alert identifies a new broad grant, inspect the affected user and the profile, permission set or group supplying it. Compare the change with the approved duties and remove an unintended grant from the source. Test the alert with a controlled assignment and check its timing against the scheduled analysis. This monitors drift from the access model established in Step 3; it does not itself block the assignment.</p>
+              <h4>Apply agreed settings across connected orgs</h4>
+              <p>Use <strong>Security Center Security Policies</strong> to define supported settings centrally and deploy them to selected connected tenants. Examples include session settings, trusted IP ranges, password configurations and Health Check baselines. Test the policy, review local exceptions and inspect deployment results. Deployed values overwrite existing target settings; continue monitoring for later changes. Follow <a href="https://help.salesforce.com/s/articleView?id=sf.security_center_deploy_policies.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Define and Deploy Security Policies</a>.</p>
+              <h4>Review collection, detections and protection jobs</h4>
+              <p>Schedule supported <strong>Security Center</strong> analyses and snapshots, check that collections are current, and confirm that selected alerts reach the responsible team. Review Security Mesh feed failures, Threat Detection response routing, disabled Transaction Security Policies and changes to thresholds or exceptions.</p>
+              <p>Review Data Detect findings and changes to encryption or Field Audit Trail coverage. Check masking, privacy, archive and backup job results and follow up on failures. Update the relevant configurations when new fields, objects, sites or integrations are introduced.</p>
+              </div>
+            </div>
+          </details>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="footer"><div class="shell"><p>This is not official Salesforce documentation. This is provided as an illustrative example only. Please refer to the official Salesforce resources at <a href="https://www.salesforce.com/" target="_blank" rel="noopener noreferrer">salesforce.com</a> for authoritative guidance.</p></div></footer>
+  <script>
+    (()=>{
+      const links=Array.from(document.querySelectorAll('.journey-nav a'));
+      const sections=Array.from(document.querySelectorAll('.step'));
+      if(!links.length||!sections.length)return;
+      function mark(id){links.forEach(link=>{if(link.getAttribute('href')==='#'+id)link.setAttribute('aria-current','step');else link.removeAttribute('aria-current');});}
+      function update(){let current=sections[0];for(const section of sections){if(section.getBoundingClientRect().top<=100)current=section;else break;}if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)current=sections[sections.length-1];mark(current.id);}
+      let pending=false;
+      window.addEventListener('scroll',()=>{if(pending)return;pending=true;window.requestAnimationFrame(()=>{update();pending=false;});},{passive:true});
+      links.forEach(link=>link.addEventListener('click',()=>mark(link.getAttribute('href').slice(1))));
+      window.addEventListener('hashchange',()=>window.requestAnimationFrame(update));
+      const panels=Array.from(document.querySelectorAll('.journey-accordion'));
+      panels.forEach(panel=>panel.addEventListener('toggle',update));
+      let printState=null;
+      window.addEventListener('beforeprint',()=>{
+        if(printState!==null)return;
+        printState=panels.map(panel=>panel.open);
+        panels.forEach(panel=>{panel.open=true;});
+      });
+      window.addEventListener('afterprint',()=>{
+        if(printState===null)return;
+        panels.forEach((panel,i)=>{panel.open=printState[i];});
+        printState=null;
+        window.requestAnimationFrame(update);
+      });
+      window.addEventListener('load',update);
+      update();
+    })();
+  </script>
+</body>
+</html>
