@@ -161,6 +161,16 @@
     .footer .review-date{margin-top:12px;font-size:.8125rem}
     .print-template{display:none}
     [hidden]{display:none!important}
+    .master-worksheet{border-top:1px solid var(--line);padding:26px 0 30px;margin-bottom:30px;scroll-margin-top:24px}
+    .master-worksheet>p:not(.sources):not(.tools){max-width:94ch}
+    .master-worksheet .table-wrap{margin:22px 0}
+    .master-worksheet .reference-table{font-size:1.0625rem}
+    .master-worksheet .worksheet-access{min-width:760px}
+    .master-worksheet .worksheet-design{min-width:610px}
+    .worksheet-design th:first-child,.worksheet-design td:first-child{width:23%}
+    .master-worksheet .tools{display:flex;gap:12px 20px;align-items:center;flex-wrap:wrap;margin-bottom:0}
+    .master-worksheet .sources{font-size:.875rem;color:var(--muted);margin:14px 0}
+    .master-worksheet .worksheet-note{font-size:1rem;color:var(--muted)}
     @media(max-width:900px){.layout{grid-template-columns:205px minmax(0,1fr);gap:27px}}
     @media(max-width:720px){.layout{display:block}.journey-nav .nav-note{display:none}.journey-nav{padding-bottom:26px}.step{margin-bottom:36px}}
     @media(max-width:540px){.concepts{grid-template-columns:1fr}.concepts>div{border-right:0;border-bottom:1px solid var(--line)}.concepts>div:last-child{border-bottom:0}.reference-table{font-size:.9375rem}.reference-table th,.reference-table td{padding:9px 8px}.template-table{min-width:460px}.masthead-inner{gap:12px}.masthead .brand{font-size:.9375rem}}
@@ -178,7 +188,7 @@
       .example{break-inside:avoid}
       .footer .review-date{font-size:8pt}
       body[data-print-template]>.document,body[data-print-template]>.skip-link{display:none!important}
-      body[data-print-template="ideation"]>#print-ideation,body[data-print-template="checks"]>#print-checks{display:block}
+      body[data-print-template="master"]>#print-master,body[data-print-template="master-example"]>#print-master-example,body[data-print-template="checks"]>#print-checks{display:block}
       .print-template h1{font-size:24pt;margin:0 0 14px}
       .print-template .print-subtitle{font-size:11pt;margin-bottom:24px}
       .print-template table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11pt}
@@ -187,6 +197,25 @@
       .print-template td{height:22mm}
       .print-template .print-footnote{font-size:10pt;margin-top:18px;line-height:1.55}
       .print-template .print-footer{font-size:8pt;color:#5f6872;margin-top:28px}
+      @page worksheet{size:A4 landscape;margin:12mm}
+      .master-worksheet{page:worksheet;break-before:page;break-after:page;margin:0;padding:0;border:0}
+      .master-worksheet .reference-table{font-size:9.5pt;min-width:0}
+      .master-worksheet h2{font-size:20pt}
+      .master-worksheet .table-wrap{margin:12px 0}
+      .master-worksheet .worksheet-note{font-size:9pt}
+      .master-print{page:worksheet;font-size:9.5pt;line-height:1.35}
+      .master-print h1{font-size:20pt;margin-bottom:8px}
+      .master-print .print-subtitle{font-size:9.5pt;margin-bottom:10px}
+      .master-print .worksheet-meta{margin:0 0 12px;font-size:9.5pt}
+      .master-print .table-wrap{margin:10px 0}
+      .master-print .reference-table{font-size:9.5pt;line-height:1.35;min-width:0}
+      .master-print .reference-table th,.master-print .reference-table td{padding:6px 8px;height:auto}
+      .master-print .worksheet-access td{height:13mm}
+      .master-print.master-blank .worksheet-design td{height:11mm}
+      .master-print .reference-table caption{font-size:10pt;margin-bottom:5px}
+      .master-print .small{font-size:8pt;line-height:1.3}
+      .master-print .print-footnote{font-size:8.5pt;line-height:1.4;margin:10px 0 0}
+      .master-print .print-footer{font-size:8pt;margin:8px 0 0}
     }
 </style>
 </head>
@@ -203,6 +232,14 @@
         <p class="subtitle">A step-by-step journey</p>
         <p class="sequence-note">Follow the seven steps or open the section you need. Each section stands on its own, with an overview, illustrative implementation steps, simple examples and how Guardian helps.</p>
       </div>
+      <section class="master-worksheet" id="master-worksheet" aria-labelledby="worksheet-title">
+        <p class="step-kicker">Before the seven steps</p>
+        <h2 id="worksheet-title">Your sharing-model worksheet</h2>
+        <p>Record the required access, then add the Salesforce configuration choices as you work through the journey. The completed worksheet becomes the implementation brief: who needs what, how access is granted or restricted, and how it will be checked and maintained.</p>
+        <div class="table-wrap" role="region" aria-label="1 · Access requirements" tabindex="0"><table class="reference-table worksheet-access"><caption>1 · Access requirements</caption><thead><tr><th scope="col">User groups</th><th scope="col">Objects, fields &amp; actions</th><th scope="col">Record access</th><th scope="col">Limits &amp; exceptions</th></tr></thead><tbody><tr><td>Who needs access? Include employees, external users, integrations and agents.</td><td>Which objects and fields? Which actions: read, create, edit, delete, export or approve?</td><td>Which records: own, team, customer, region or specifically assigned records?</td><td>What must be denied? For exceptions, record the reason, approver and end date.</td></tr></tbody></table></div><div class="table-wrap" role="region" aria-label="2 · Salesforce configuration" tabindex="0"><table class="reference-table worksheet-design"><caption>2 · Salesforce configuration</caption><thead><tr><th scope="col">Configuration area</th><th scope="col">Decision</th></tr></thead><tbody><tr><td><strong>Permissions</strong><span class="small">Step 02</span></td><td>Minimum profile; task permission sets; permission set groups; any muting; object and field permissions.</td></tr><tr><td><strong>Record defaults</strong><span class="small">Step 03</span></td><td>Record ownership and parent relationships; internal/external OWD; role hierarchy and any custom-object hierarchy setting.</td></tr><tr><td><strong>Sharing</strong><span class="small">Step 04</span></td><td>Recipient and access level; sharing rule, team, territory, manual or programmatic share, or external sharing mechanism; what removes the grant.</td></tr><tr><td><strong>Restrictions &amp; access paths</strong><span class="small">Step 05</span></td><td>Any restriction rule: object, target users and permitted records. Guest/external access, Apex/Flow execution context and integration or agent identity.</td></tr><tr><td><strong>Tests &amp; upkeep</strong><span class="small">Steps 06–07</span></td><td>Allowed and denied checks; pilot and rollback; assignment/removal actions, including User Access Policies where useful; exceptions, review owner and change triggers.</td></tr></tbody></table></div>
+        <p class="worksheet-note">Use one row per user group and access requirement. Agree OWD and hierarchy once per object across all rows. Record “not needed” for optional controls that have no requirement.</p>
+        <p class="tools"><button type="button" class="text-button" data-print-template="master">Print blank master worksheet</button><a href="#completed-worksheet">See a completed example</a></p>
+      </section>
       <div class="layout">
         <nav class="journey-nav" aria-label="Sharing-model journey steps">
           <h2>Journey</h2>
@@ -227,11 +264,9 @@
           <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
           <div class="accordion-body"><h4>Start with a short access statement</h4>
     <p>List the main user groups and the work they perform. Specify the record population: their own records, a team’s records, assigned customers or another clear scope. Name sensitive fields that need different access.</p>
-    <h4>Use the one-page ideation template</h4>
-    <p>Begin with a few rows. Capture a business requirement in each row; configuration names can be added later.</p>
-    <div class="table-wrap" role="region" aria-label="Who needs access to what?" tabindex="0"><table class="reference-table template-table"><caption>Who needs access to what?</caption><thead><tr><th scope="col">Who?</th><th scope="col">Which data?</th><th scope="col">Can do</th><th scope="col">Cannot do</th></tr></thead><tbody><tr><td>Sales rep <span class="small">(example)</span></td><td>Assigned Opportunities</td><td>Read and update</td><td>Read Commission</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table></div>
-    <p class="footnote">Add one row per user group, integration or agent. Add particular fields, exceptions or expiry conditions only when needed.</p>
-    <p class="tools"><button type="button" class="text-button" data-print-template="ideation">Print blank ideation template</button></p>
+    <h4>Start the master worksheet</h4>
+    <p>Complete the access-requirements rows in the <a href="#master-worksheet">master sharing-model worksheet</a>. Keep business requirements in those rows and add the configuration decisions below them as you work through the journey. The <a href="#completed-worksheet">completed example</a> shows how the two parts connect.</p>
+    <p class="tools"><button type="button" class="text-button" data-print-template="master">Print blank master worksheet</button></p>
     <h4>Include actions that need their own decision</h4>
     <p>Consider creating, deleting, exporting, approving and transferring records as well as reading and editing them. Include temporary collaboration and changes of responsibility. A requirement to update a record does not automatically justify every other operation.</p></div>
         </details><details class="journey-accordion accordion-examples" id="step-1-examples">
@@ -426,16 +461,31 @@
         </details>
       </section></div>
       </div>
+      <section class="master-worksheet" id="completed-worksheet" aria-labelledby="completed-worksheet-title">
+        <p class="step-kicker">After the seven steps</p>
+        <h2 id="completed-worksheet-title">The worksheet, translated into configuration</h2>
+        <p>Illustrative custom Policy object, owned by advisors, with Status, Region, Confidential and Commission fields. The example covers two internal user groups. The sharing rule opens access to East policies; the restriction rule filters confidential records out of the service users’ access.</p>
+        <div class="table-wrap" role="region" aria-label="1 · Access requirements" tabindex="0"><table class="reference-table worksheet-access"><caption>1 · Access requirements</caption><thead><tr><th scope="col">User groups</th><th scope="col">Objects, fields &amp; actions</th><th scope="col">Record access</th><th scope="col">Limits &amp; exceptions</th></tr></thead><tbody><tr><td><strong>Advisors</strong></td><td>Policy: read; update Status. Read Region and Confidential. Commission is unreadable.</td><td>Policies they own.</td><td>No Create or Delete. Cannot change Region or Confidential. No access to other advisors’ policies.</td></tr><tr><td><strong>East Service</strong></td><td>Policy: read only. Read Status, Region and Confidential. Commission is unreadable.</td><td>East policies, excluding confidential records.</td><td>No Create, Edit or Delete. Confidential policies must remain inaccessible even if shared. No approved exceptions.</td></tr></tbody></table></div><div class="table-wrap" role="region" aria-label="2 · Salesforce configuration" tabindex="0"><table class="reference-table worksheet-design"><caption>2 · Salesforce configuration</caption><thead><tr><th scope="col">Configuration area</th><th scope="col">Decision</th></tr></thead><tbody><tr><td><strong>Permissions</strong><span class="small">Step 02</span></td><td><strong>Both:</strong> appropriate minimum profile. <strong>Advisor permission set group:</strong> Maintain Policies set, with object Read/Edit and Status Read/Edit. <strong>Service permission set group:</strong> Read Policies set, with object/Status Read only. Both sets grant Region and Confidential Read. Create, Delete and Commission access stay ungranted across all assignments. <strong>Muting:</strong> not needed for these narrowly scoped sets.</td></tr><tr><td><strong>Record defaults</strong><span class="small">Step 03</span></td><td><strong>Policy OWD: Private.</strong> Advisors own the records. Disable Grant Access Using Hierarchies for this illustrative custom object; management visibility is not required in this example.</td></tr><tr><td><strong>Sharing</strong><span class="small">Step 04</span></td><td><strong>Criteria-based sharing:</strong> Region = East → East Service public group → Read Only. Remove group membership when the service assignment ends. The public group and the Service permission set group have separate purposes.</td></tr><tr><td><strong>Restrictions &amp; access paths</strong><span class="small">Step 05</span></td><td><strong>Policy restriction rule:</strong> target users whose Department = East Service; allow only records where <code>Confidential__c = false</code>. Keep that user criterion aligned with service assignments. This filters existing grants. Scope: internal Lightning users; no elevated automation path or broad record-access permissions for these personas.</td></tr><tr><td><strong>Tests &amp; upkeep</strong><span class="small">Steps 06–07</span></td><td><strong>Expected checks:</strong> advisor’s own policy allowed; another advisor’s denied. East Service: non-confidential East allowed; confidential East and unshared West denied. Commission and Delete denied for both. CRM admin owns pilot/rollback and rechecks after schema or team changes. Update Department, public-group membership and permission assignments together when a user moves.</td></tr></tbody></table></div>
+        <p class="worksheet-note">Proposed settings, not a deployed configuration. Confirm that no other grants defeat the requirements. Restriction rules have documented bypasses and access-path limits; test the actual paths used. Add further rows for other users, objects, integrations or agents.</p>
+        <p class="sources">Salesforce resources: <a href="https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-sharing-architecture.html" target="_blank" rel="noopener noreferrer">Platform Sharing Architecture</a> · <a href="https://help.salesforce.com/s/articleView?id=sf.security_restriction_rule.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction rules</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.security_restriction_rule_considerations.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction-rule considerations</a></p>
+        <p class="tools"><button type="button" class="text-button" data-print-template="master">Print blank master worksheet</button><button type="button" class="text-button" data-print-template="master-example">Print completed example</button></p>
+      </section>
     </main>
     <footer class="footer"><div class="shell">
       <p>This is not official Salesforce documentation. This is provided as an illustrative example only. Please refer to the official Salesforce resources at <a href="https://www.salesforce.com/" target="_blank" rel="noopener noreferrer">salesforce.com</a> for authoritative guidance.</p>
       <p class="review-date">Salesforce resources reviewed 24 September 2026. Feature behavior depends on the object, access path and applicable release.</p>
     </div></footer>
   </div>
-  <section class="print-template" id="print-ideation" aria-label="Who needs access to what?">
-      <h1>Who needs access to what?</h1><p class="print-subtitle">Access ideation template</p>
-      <table><thead><tr><th scope="col">Who?</th><th scope="col">Which data?</th><th scope="col">Can do</th><th scope="col">Cannot do</th></tr></thead><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
-      <p class="print-footnote">Add one row per user group, integration or agent. Add particular records, fields, exceptions or expiry conditions only when needed.</p>
+  <section class="print-template master-print master-blank" id="print-master" aria-label="Sharing-model worksheet">
+      <h1>Sharing-model worksheet</h1><p class="print-subtitle">Record the required access, then specify the Salesforce configuration.</p><p class="worksheet-meta">Org / scope: ____________________ &nbsp;&nbsp; Owner: ____________________ &nbsp;&nbsp; Date: ______________</p>
+      <div class="table-wrap" role="region" aria-label="1 · Access requirements" tabindex="0"><table class="reference-table worksheet-access"><caption>1 · Access requirements</caption><thead><tr><th scope="col">User groups</th><th scope="col">Objects, fields &amp; actions</th><th scope="col">Record access</th><th scope="col">Limits &amp; exceptions</th></tr></thead><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table></div><div class="table-wrap" role="region" aria-label="2 · Salesforce configuration" tabindex="0"><table class="reference-table worksheet-design"><caption>2 · Salesforce configuration</caption><thead><tr><th scope="col">Configuration area</th><th scope="col">Decision</th></tr></thead><tbody><tr><td><strong>Permissions</strong><span class="small">Step 02</span></td><td>&nbsp;</td></tr><tr><td><strong>Record defaults</strong><span class="small">Step 03</span></td><td>&nbsp;</td></tr><tr><td><strong>Sharing</strong><span class="small">Step 04</span></td><td>&nbsp;</td></tr><tr><td><strong>Restrictions &amp; access paths</strong><span class="small">Step 05</span></td><td>&nbsp;</td></tr><tr><td><strong>Tests &amp; upkeep</strong><span class="small">Steps 06–07</span></td><td>&nbsp;</td></tr></tbody></table></div>
+      <p class="print-footnote">Use one row per user group and access requirement. Agree OWD and hierarchy once per object across all rows. Record “not needed” for optional controls that have no requirement.</p>
+      <p class="print-footer">Illustrative Salesforce sharing-model template. This is not official Salesforce documentation.</p>
+    </section>
+  <section class="print-template master-print master-filled" id="print-master-example" aria-label="Sharing-model worksheet — example">
+      <h1>Sharing-model worksheet — example</h1><p class="print-subtitle">Illustrative custom Policy object, owned by advisors, with Status, Region, Confidential and Commission fields. The example covers two internal user groups.</p>
+      <div class="table-wrap" role="region" aria-label="1 · Access requirements" tabindex="0"><table class="reference-table worksheet-access"><caption>1 · Access requirements</caption><thead><tr><th scope="col">User groups</th><th scope="col">Objects, fields &amp; actions</th><th scope="col">Record access</th><th scope="col">Limits &amp; exceptions</th></tr></thead><tbody><tr><td><strong>Advisors</strong></td><td>Policy: read; update Status. Read Region and Confidential. Commission is unreadable.</td><td>Policies they own.</td><td>No Create or Delete. Cannot change Region or Confidential. No access to other advisors’ policies.</td></tr><tr><td><strong>East Service</strong></td><td>Policy: read only. Read Status, Region and Confidential. Commission is unreadable.</td><td>East policies, excluding confidential records.</td><td>No Create, Edit or Delete. Confidential policies must remain inaccessible even if shared. No approved exceptions.</td></tr></tbody></table></div><div class="table-wrap" role="region" aria-label="2 · Salesforce configuration" tabindex="0"><table class="reference-table worksheet-design"><caption>2 · Salesforce configuration</caption><thead><tr><th scope="col">Configuration area</th><th scope="col">Decision</th></tr></thead><tbody><tr><td><strong>Permissions</strong><span class="small">Step 02</span></td><td><strong>Both:</strong> appropriate minimum profile. <strong>Advisor permission set group:</strong> Maintain Policies set, with object Read/Edit and Status Read/Edit. <strong>Service permission set group:</strong> Read Policies set, with object/Status Read only. Both sets grant Region and Confidential Read. Create, Delete and Commission access stay ungranted across all assignments. <strong>Muting:</strong> not needed for these narrowly scoped sets.</td></tr><tr><td><strong>Record defaults</strong><span class="small">Step 03</span></td><td><strong>Policy OWD: Private.</strong> Advisors own the records. Disable Grant Access Using Hierarchies for this illustrative custom object; management visibility is not required in this example.</td></tr><tr><td><strong>Sharing</strong><span class="small">Step 04</span></td><td><strong>Criteria-based sharing:</strong> Region = East → East Service public group → Read Only. Remove group membership when the service assignment ends. The public group and the Service permission set group have separate purposes.</td></tr><tr><td><strong>Restrictions &amp; access paths</strong><span class="small">Step 05</span></td><td><strong>Policy restriction rule:</strong> target users whose Department = East Service; allow only records where <code>Confidential__c = false</code>. Keep that user criterion aligned with service assignments. This filters existing grants. Scope: internal Lightning users; no elevated automation path or broad record-access permissions for these personas.</td></tr><tr><td><strong>Tests &amp; upkeep</strong><span class="small">Steps 06–07</span></td><td><strong>Expected checks:</strong> advisor’s own policy allowed; another advisor’s denied. East Service: non-confidential East allowed; confidential East and unshared West denied. Commission and Delete denied for both. CRM admin owns pilot/rollback and rechecks after schema or team changes. Update Department, public-group membership and permission assignments together when a user moves.</td></tr></tbody></table></div>
+      <p class="print-footnote">Proposed settings, not a deployed configuration. Confirm that no other grants defeat the requirements. Restriction rules have documented bypasses and access-path limits; test the actual paths used. Add further rows for other users, objects, integrations or agents.</p>
       <p class="print-footer">Illustrative Salesforce sharing-model template. This is not official Salesforce documentation.</p>
     </section>
   <section class="print-template" id="print-checks" aria-label="Does access match the requirement?">
