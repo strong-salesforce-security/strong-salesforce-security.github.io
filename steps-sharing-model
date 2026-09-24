@@ -1,1 +1,498 @@
-d
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An illustrative seven-step path to a secure Salesforce sharing model, covering profiles, permission sets, groups, field permissions, record sharing, restriction rules and ongoing access maintenance.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Salesforce sharing model — a seven-step journey</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23283645'/%3E%3Cpath d='M10 13v-3a6 6 0 0 1 12 0v3M8 13h16v14H8z' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    :root{color-scheme:light;--ink:#283545;--text:#39434d;--muted:#5f6872;--line:#dce1e6;--paper:#fff;--soft:#f4f6f8;--serif:Georgia,'Times New Roman',serif;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+    *{box-sizing:border-box}
+    html{scroll-padding-top:24px}
+    body{margin:0;background:var(--paper);color:var(--text);font:1rem/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+    a{color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1px}
+    a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+    h1,h2,h3,p{margin-top:0}
+    h1,h2{font-family:var(--serif);font-weight:400;color:var(--ink);line-height:1.2}
+    h1{font-size:clamp(2rem,3.4vw,2.8rem);letter-spacing:-.6px;max-width:850px;margin-bottom:12px}
+    h2{font-size:1.9rem;letter-spacing:-.25px;margin-bottom:9px}
+    h3{font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin-bottom:12px}
+    p{margin-bottom:14px}
+    strong{font-weight:650;color:var(--ink)}
+    .shell{max-width:1200px;margin:auto;padding:0 36px}
+    .masthead{border-bottom:1px solid var(--line)}
+    .masthead-inner{min-height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .masthead p{margin:0;font-size:.875rem;color:var(--muted)}
+    .masthead .brand{font-weight:650;color:var(--ink)}
+    .intro{padding-top:34px;padding-bottom:30px}
+    .subtitle{font-family:var(--serif);font-size:1.35rem;color:var(--muted);margin-bottom:16px}
+    .sequence-note{max-width:880px;margin:0;font-size:1rem;line-height:1.65}
+    .layout{display:grid;grid-template-columns:222px minmax(0,1fr);gap:44px;align-items:start}
+    .journey-nav{position:sticky;top:24px;padding-bottom:24px}
+    .journey-nav h2{font-family:var(--sans);font-size:.875rem;font-weight:650;letter-spacing:0;margin:0 0 14px}
+    .journey-nav ol{list-style:none;padding:0;margin:0;position:relative}
+    .journey-nav ol::before{content:'';position:absolute;width:1px;left:16px;top:21px;bottom:23px;background:var(--line)}
+    .journey-nav li{position:relative;margin-bottom:7px}
+    .journey-nav a{display:flex;align-items:center;gap:11px;text-decoration:none;font-size:.9375rem;line-height:1.4;color:var(--muted);padding:8px 6px 8px 0;border-radius:4px}
+    .journey-nav a:hover{color:var(--ink);background:var(--soft)}
+    .journey-nav .number{display:flex;align-items:center;justify-content:center;width:33px;height:33px;flex:none;border:1px solid var(--line);background:white;border-radius:50%;font-size:.8125rem;color:var(--muted);font-variant-numeric:tabular-nums}
+    .journey-nav a[aria-current="step"]{font-weight:650;color:var(--ink)}
+    .journey-nav a[aria-current="step"] .number{background:var(--ink);border-color:var(--ink);color:white}
+    .parallel-note{border-top:1px solid var(--line);padding-top:18px;margin:20px 0 0;color:var(--muted);font-size:.875rem;line-height:1.6}
+    .steps{min-width:0}
+    .step{border-top:1px solid var(--line);padding:27px 0 0;margin-bottom:48px;scroll-margin-top:24px}
+    .step-kicker{font-size:.8125rem;letter-spacing:.7px;color:var(--muted);margin-bottom:9px}
+    .step-intent{margin-bottom:12px;max-width:70ch}
+    .ootb{padding:8px 0 20px}
+    .actions{margin:0;padding-left:21px}
+    .actions li{margin-bottom:10px;padding-left:3px}
+    .actions li:last-child{margin-bottom:0}
+    .implementation{margin-top:21px;padding-top:17px;border-top:1px solid var(--line)}
+    .implementation h4{font-family:var(--sans);font-size:.9375rem;font-weight:650;line-height:1.45;color:var(--ink);margin:0 0 9px}
+    .implementation p{margin:0;line-height:1.65}
+    .implementation p+p{margin-top:14px}
+    .implementation h5{font-family:var(--sans);font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin:23px 0 9px}
+    .implementation h4+h5{margin-top:15px}
+    .guardian{padding:21px 24px;background:var(--soft);border:1px solid var(--line);border-radius:4px}
+    .guardian-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+    .guardian-heading h3{margin:0}
+    .reference-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9375rem;line-height:1.5;table-layout:fixed}
+    .reference-table caption{text-align:left;color:var(--muted);font-size:.8125rem;margin-bottom:9px}
+    .reference-table th,.reference-table td{padding:10px 12px;border:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:anywhere}
+    .reference-table thead th{background:var(--soft);color:var(--ink);font-weight:650}
+    .reference-table tbody th{font-weight:600;color:var(--ink)}
+    .reference-table+.reference-table{margin-top:20px}
+    @media(max-width:420px){.reference-table{font-size:.875rem}.reference-table th,.reference-table td{padding:8px}}
+    @media print{.reference-table{font-size:9pt}.reference-table tr{break-inside:avoid}.reference-table thead{display:table-header-group}}
+    .guardian-detail{margin-top:0}
+    .guardian-detail h4{font-family:var(--sans);font-size:1rem;font-weight:650;line-height:1.45;color:var(--ink);margin:21px 0 9px}
+    .guardian-detail h4:first-child{margin-top:0}
+    .guardian-detail p{margin:0 0 14px}
+    .guardian-detail p:last-child{margin-bottom:0}
+    .footer{border-top:1px solid var(--line);padding:20px 0 26px;font-size:.8125rem;color:var(--muted)}
+    .footer .shell{display:block}
+    .footer p{margin:0;max-width:96ch}
+    .skip-link{position:absolute;left:24px;top:-100px;z-index:10;background:white;padding:10px 16px}
+    .skip-link:focus{top:12px}
+    @media(max-width:900px){.shell{padding-left:25px;padding-right:25px}.layout{grid-template-columns:190px minmax(0,1fr);gap:28px}.guardian{padding:18px 20px}.journey-nav a{font-size:.875rem}}
+    @media(max-width:720px){.layout{display:block}.journey-nav{position:static;padding-bottom:23px}.journey-nav ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 14px}.journey-nav ol::before{display:none}.journey-nav li{margin:0}.journey-nav a{padding:6px 0}.parallel-note{margin-top:14px;padding-top:13px}.intro{padding-top:28px;padding-bottom:23px}.step{margin-bottom:36px}h2{font-size:1.75rem}}
+    @media(max-width:420px){.shell{padding-left:19px;padding-right:19px}.masthead-inner{min-height:58px}.journey-nav ol{grid-template-columns:1fr}.journey-nav .number{width:29px;height:29px}.journey-nav a{min-height:44px}.guardian{padding:17px}.guardian-heading{display:block}.intro{padding-top:24px}}
+    /* Reading sizes for the screen; print sizing and layout are unchanged. */
+    @media screen{
+      body{font-size:1.125rem}
+      h1{font-size:clamp(2.25rem,3.4vw,3rem)}
+      h2{font-size:2.125rem}
+      h3,.implementation h4,.implementation h5,.guardian-detail h4{font-size:1.125rem}
+      .masthead p,.journey-nav h2,.parallel-note{font-size:1rem}
+      .subtitle{font-size:1.5rem}
+      .sequence-note{font-size:1.125rem}
+      .journey-nav a{font-size:1.0625rem}
+      .journey-nav .number,.step-kicker,.reference-table caption,.footer{font-size:.875rem}
+      .reference-table{font-size:1rem}
+    }
+    @media screen and (max-width:720px){h2{font-size:2rem}}
+    @media print{@page{size:A4;margin:18mm}body{font-size:10.5pt;color:#111;background:white}.shell{padding:0;max-width:none}.masthead,.journey-nav,.skip-link{display:none}.intro{padding:0 0 20px}h1{font-size:25pt}h2{font-size:19pt}.layout{display:block}.step{break-before:page;margin-bottom:0;scroll-margin-top:0;padding-top:18px}.step:first-child{break-before:auto}.guardian{background:#f5f5f5;border-color:#ccc}.implementation h4,.implementation h5,.guardian h3,.guardian h4{break-after:avoid}.implementation p,.guardian-detail p{orphans:3;widows:3}.actions li{margin-bottom:7px}a{color:inherit;text-decoration:none}}
+    /* Independent, initially collapsed sections for presentation and reference. */
+    .journey-accordion{margin:0 0 10px;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+    .journey-accordion.accordion-guardian{background:var(--soft)}
+    .journey-accordion>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:58px;padding:15px 20px;list-style:none;cursor:pointer;touch-action:manipulation;color:var(--ink);border-radius:4px}
+    .journey-accordion>summary::-webkit-details-marker{display:none}
+    .journey-accordion>summary::marker{content:''}
+    .journey-accordion>summary:hover{background:var(--soft)}
+    .journey-accordion>summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+    .journey-accordion>summary h3{margin:0;font-size:1.125rem;line-height:1.45}
+    .accordion-icon{width:9px;height:9px;flex:none;margin-right:3px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)}
+    .journey-accordion[open]>summary{border-bottom:1px solid var(--line);border-radius:4px 4px 0 0}
+    .journey-accordion[open]>summary .accordion-icon{transform:rotate(225deg)}
+    .accordion-body{padding:20px}
+    .journey-accordion .implementation{margin:0;padding:0;border:0}
+    .journey-accordion .implementation h4{margin:23px 0 9px;font-size:1.125rem}
+    .journey-accordion .implementation>:first-child{margin-top:0}
+    @media(max-width:420px){.journey-accordion>summary{padding:14px 16px}.accordion-body{padding:17px 16px}}
+    @media print{
+      .journey-accordion{margin:14px 0;border:0;background:transparent}
+      .journey-accordion.accordion-guardian{background:transparent}
+      .journey-accordion>summary,.journey-accordion[open]>summary{padding:0 0 9px;min-height:0;border:0;break-after:avoid}
+      .journey-accordion>summary h3,.journey-accordion .implementation h4{font-size:11pt}
+      .accordion-icon{display:none}
+      .accordion-body{padding:0}
+      .guardian-detail h4{break-after:avoid}
+    }
+    .journey-overview{margin:24px 0;break-inside:avoid;border:1px solid var(--line)}
+    .journey-overview img{display:block;width:100%;max-width:100%;height:auto}
+  
+    .intro{padding-bottom:34px}
+    .sequence-note{max-width:880px}
+    .journey-nav .nav-note{border-top:1px solid var(--line);padding-top:17px;margin:19px 0 0;color:var(--muted);font-size:1rem}
+    .step{margin-bottom:46px}
+    .accordion-body>p:last-child,.accordion-body>div:last-child{margin-bottom:0}
+    .accordion-body h4{font-size:1.125rem;font-weight:650;line-height:1.45;color:var(--ink);margin:25px 0 10px}
+    .accordion-body>h4:first-child{margin-top:0}
+    .accordion-body .sources{font-size:.875rem;line-height:1.65;color:var(--muted);margin:10px 0 21px;overflow-wrap:anywhere}
+    .sources a{color:var(--muted)}
+    .footnote,.small{font-size:.9375rem;color:var(--muted);line-height:1.6}
+    .small{display:block}
+    .footnote{margin:10px 0 17px}
+    .table-wrap{overflow-x:auto;max-width:100%;margin:15px 0}
+    .table-wrap:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+    .reference-table{margin:0;font-size:1rem;line-height:1.55}
+    .reference-table caption{font-size:1rem;color:var(--ink);font-weight:600;line-height:1.5}
+    .template-table td{height:64px}
+    .tools{margin:16px 0 25px}
+    button{font-family:var(--sans);font-size:1rem;cursor:pointer;touch-action:manipulation}
+    button:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+    .text-button{background:var(--paper);color:var(--ink);border:1px solid #b7c0c9;border-radius:4px;padding:9px 13px;line-height:1.4;min-height:44px}
+    .text-button:hover{background:var(--soft)}
+    .masthead .text-button{font-size:.875rem;padding:6px 11px;min-height:36px}
+    .example{padding:18px 0;margin:0;border-top:1px solid var(--line)}
+    .example:first-child{border-top:0;padding-top:0}
+    .example:last-child{padding-bottom:0}
+    .example h4{margin:0 0 10px}
+    .example>p:last-child{margin-bottom:0}
+    .example .sources{margin:10px 0 0}
+    .concepts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:4px;margin:0 0 22px;background:var(--soft)}
+    .concepts>div{padding:16px;border-right:1px solid var(--line)}
+    .concepts>div:last-child{border-right:0}
+    .concepts p{font-size:1rem;line-height:1.55;margin:0}
+    .concepts .concept-label{font-weight:650;color:var(--ink);margin-bottom:6px}
+    code{font: .94em ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--soft);padding:1px 4px;border-radius:3px;overflow-wrap:anywhere}
+    .footer .review-date{margin-top:12px;font-size:.8125rem}
+    .print-template{display:none}
+    [hidden]{display:none!important}
+    @media(max-width:900px){.layout{grid-template-columns:205px minmax(0,1fr);gap:27px}}
+    @media(max-width:720px){.layout{display:block}.journey-nav .nav-note{display:none}.journey-nav{padding-bottom:26px}.step{margin-bottom:36px}}
+    @media(max-width:540px){.concepts{grid-template-columns:1fr}.concepts>div{border-right:0;border-bottom:1px solid var(--line)}.concepts>div:last-child{border-bottom:0}.reference-table{font-size:.9375rem}.reference-table th,.reference-table td{padding:9px 8px}.template-table{min-width:460px}.masthead-inner{gap:12px}.masthead .brand{font-size:.9375rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    @media print{
+      @page{size:A4;margin:16mm}
+      .tools,.text-button,.nav-note{display:none!important}
+      .accordion-body h4{font-size:11pt;break-after:avoid}
+      .sources,.accordion-body .sources,.footnote,.small{font-size:8.5pt}
+      .reference-table{font-size:9pt;min-width:0;table-layout:fixed}
+      .reference-table caption{font-size:10pt}
+      .table-wrap{overflow:visible}
+      .template-table td{height:auto}
+      .concepts{display:flex}.concepts>div{flex:1}.concepts p{font-size:10pt}
+      .example{break-inside:avoid}
+      .footer .review-date{font-size:8pt}
+      body[data-print-template]>.document,body[data-print-template]>.skip-link{display:none!important}
+      body[data-print-template="ideation"]>#print-ideation,body[data-print-template="checks"]>#print-checks{display:block}
+      .print-template h1{font-size:24pt;margin:0 0 14px}
+      .print-template .print-subtitle{font-size:11pt;margin-bottom:24px}
+      .print-template table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11pt}
+      .print-template th,.print-template td{border:1px solid #aab2ba;padding:12px;text-align:left;vertical-align:top}
+      .print-template th{background:#f4f6f8;height:auto}
+      .print-template td{height:22mm}
+      .print-template .print-footnote{font-size:10pt;margin-top:18px;line-height:1.55}
+      .print-template .print-footer{font-size:8pt;color:#5f6872;margin-top:28px}
+    }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#step-1">Skip to the journey</a>
+  <div class="document">
+    <header class="masthead"><div class="shell masthead-inner"><p class="brand">Salesforce access &amp; sharing</p><button class="text-button" type="button" id="print-guide">Print guide</button></div></header>
+    <main class="shell">
+      <div class="intro">
+        <h1>A path to a secure Salesforce sharing model</h1>
+        <p class="subtitle">A step-by-step journey</p>
+        <p class="sequence-note">Follow the seven steps or open the section you need. Each section stands on its own, with an overview, illustrative implementation steps and simple examples.</p>
+      </div>
+      <div class="layout">
+        <nav class="journey-nav" aria-label="Sharing-model journey steps">
+          <h2>Journey</h2>
+          <ol><li><a href="#step-1" aria-current="step"><span class="number">01</span><span>Define access needs</span></a></li>
+<li><a href="#step-2"><span class="number">02</span><span>Set up permissions</span></a></li>
+<li><a href="#step-3"><span class="number">03</span><span>Set record defaults</span></a></li>
+<li><a href="#step-4"><span class="number">04</span><span>Share records</span></a></li>
+<li><a href="#step-5"><span class="number">05</span><span>Restrict access</span></a></li>
+<li><a href="#step-6"><span class="number">06</span><span>Test and migrate</span></a></li>
+<li><a href="#step-7"><span class="number">07</span><span>Maintain access</span></a></li></ol>
+          <p class="nav-note">Begin with the required access. Configure the grants, check the result and revisit access when responsibilities change.</p>
+        </nav>
+        <div class="steps"><section class="step" id="step-1" aria-labelledby="title-1">
+        <p class="step-kicker">Step 01 of 07</p>
+        <h2 id="title-1">Define who needs access to which data</h2>
+        <p class="step-intent">Describe the required access before choosing profiles, permissions or sharing rules.</p>
+        <details class="journey-accordion accordion-overview" id="step-1-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Write down <strong>who needs the data, which data they need, what they can do and what they must not do</strong>. Use the same four questions for employees, external users, integrations and AI-agent actions.</p>
+    <p>Separate access to an <strong>object</strong>, access to its <strong>fields</strong> and access to individual <strong>records</strong>. A user may be able to edit Opportunities while remaining unable to read Commission or open another team’s Opportunities.</p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-1-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Start with a short access statement</h4>
+    <p>List the main user groups and the work they perform. Specify the record population: their own records, a team’s records, assigned customers or another clear scope. Name sensitive fields that need different access.</p>
+    <h4>Use the one-page ideation template</h4>
+    <p>Begin with a few rows. Capture a business requirement in each row; configuration names can be added later.</p>
+    <div class="table-wrap" role="region" aria-label="Who needs access to what?" tabindex="0"><table class="reference-table template-table"><caption>Who needs access to what?</caption><thead><tr><th scope="col">Who?</th><th scope="col">Which data?</th><th scope="col">Can do</th><th scope="col">Cannot do</th></tr></thead><tbody><tr><td>Sales rep <span class="small">(example)</span></td><td>Assigned Opportunities</td><td>Read and update</td><td>Read Commission</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table></div>
+    <p class="footnote">Add one row per user group, integration or agent. Add particular fields, exceptions or expiry conditions only when needed.</p>
+    <p class="tools"><button type="button" class="text-button" data-print-template="ideation">Print blank ideation template</button></p>
+    <h4>Include actions that need their own decision</h4>
+    <p>Consider creating, deleting, exporting, approving and transferring records as well as reading and editing them. Include temporary collaboration and changes of responsibility. A requirement to update a record does not automatically justify every other operation.</p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-1-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="concepts" aria-label="Three separate access questions">
+      <div><p class="concept-label">Object</p><p>Can the sales rep read Opportunities?</p></div>
+      <div><p class="concept-label">Field</p><p>Can the sales rep read Commission?</p></div>
+      <div><p class="concept-label">Record</p><p>Which Opportunities can the sales rep open?</p></div>
+    </div><div class="example"><h4>A clear requirement</h4><p><strong>Sales reps can read and update assigned Opportunities. They cannot read Commission.</strong></p><p>This states the work, the record scope and the field boundary without prescribing a particular configuration.</p></div></div>
+        </details>
+      </section><section class="step" id="step-2" aria-labelledby="title-2">
+        <p class="step-kicker">Step 02 of 07</p>
+        <h2 id="title-2">Set up profiles, permission sets and groups</h2>
+        <p class="step-intent">Start with an appropriate minimum profile, then add the permissions required for each task.</p>
+        <details class="journey-accordion accordion-overview" id="step-2-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Use the profile for a minimal baseline and the settings it must carry. Build additional access through <strong>permission sets</strong>, and combine them into <strong>permission set groups</strong> for user personas.</p>
+    <p>A permission left ungranted in the profile can be granted by a permission set. Inspect the user’s combined permissions, including the effect of group-specific muting.</p><p class="sources">Salesforce resources: <a href="https://admin.salesforce.com/blog/2026/the-salesforce-admins-guide-to-profiles-and-permissions" target="_blank" rel="noopener noreferrer">Profiles, permission sets and groups</a> · <a href="https://help.salesforce.com/s/articleView?id=sf.perm_set_groups_muting.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Muting permission sets</a></p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-2-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>1. Set the profile baseline</h4>
+    <p>Choose an appropriate minimum profile. Review login hours, login IP ranges, default apps and record types, and page-layout assignments. Keep baseline permissions narrow enough for the intended users.</p>
+    <h4>2. Add permissions for tasks</h4>
+    <p>Create reusable permission sets for identifiable work, such as maintaining Opportunities or running reports. Specify object actions, field Read/Edit permissions and required system permissions. Include application, Apex-class and custom-permission access when the task needs them.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.perm_sets_permissions_access.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Configure permission sets</a></p>
+    <h4>3. Assemble groups and apply muting deliberately</h4>
+    <p>Combine the relevant permission sets into a group for a persona. Use muting when that group should omit a permission included in one of its sets. Check direct assignments and other groups for the same grant; muting does not remove their contributions.</p>
+    <h4>4. Configure field access at its source</h4>
+    <p><strong>Object Manager → Fields &amp; Relationships → field → Set Field-Level Security</strong> can edit the field permissions on profiles. Those changes belong to the selected profiles. Object Manager can also manage permission-set FLS with the relevant User Management setting enabled.</p>
+    <p>Use <strong>Object Manager → object → Field Access</strong> to review which profiles, permission sets and groups grant access to a field. Keep the editing screen and the access-summary screen distinct.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.users_fields_fls.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Set field-level security in Object Manager</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.users_field_perms_summary.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Field Access Summary</a></p>
+    <h4>5. Review broad grants and UI settings</h4>
+    <p>Review <strong>View All Records, Modify All Records, View All Data and Modify All Data</strong> separately from <strong>View All Fields</strong>. Broad record permissions bypass ordinary record sharing; they do not themselves override field-level security.</p>
+    <p>Removing a field from a page layout does not remove its field permission. Record-type assignment controls which types a user can use when creating or editing; it does not determine whether they can view an existing record.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.users_profiles_view_all_mod_all.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">View All and Modify All permissions</a> · <a href="https://help.salesforce.com/s/articleView?id=sf.users_profiles_field_perms.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Field permissions</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.permissions_record_type_access.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Record-type assignment</a></p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-2-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>Field access from a permission set</h4><p>A profile leaves Commission unreadable. Assign a permission set granting Read on Commission: the user gains field Read permission, while the profile remains unchanged.</p><div class="table-wrap" role="region" aria-label="Illustrative field-permission combinations" tabindex="0"><table class="reference-table "><caption>Illustrative field-permission combinations</caption><thead><tr><th scope="col">Profile grants</th><th scope="col">Permission set grants</th><th scope="col">Effective field permission</th></tr></thead><tbody><tr><td>None</td><td>Read</td><td>Read</td></tr><tr><td>Read</td><td>Read and Edit</td><td>Read and Edit</td></tr><tr><td>Read and Edit</td><td>Read</td><td>Read and Edit</td></tr></tbody></table></div><p class="footnote">Assumes no other grants. The user also needs the relevant object and record access. Page layout determines whether the field appears on a particular page.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.perm_sets_permissions_access.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Configure permission sets</a></p></div><div class="example"><h4>Permission set group</h4><p>An illustrative <strong>Sales User</strong> group bundles <strong>Manage Opportunities</strong> and <strong>Run Reports</strong> permission sets. One assignment supplies both sets’ permissions, subject to muting. These are example names, not prebuilt bundles.</p></div><div class="example"><h4>Muting: remove Delete from one group</h4><p>A permission set in a <strong>Sales Staff</strong> group includes Opportunity Delete. Mute Delete in that group: the group stops granting it. A profile or separate permission-set assignment can still grant Delete.</p><p class="footnote">Shortened adaptation of Salesforce’s documented muting example.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.perm_set_groups_muting.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Muting permission sets</a></p></div></div>
+        </details>
+      </section><section class="step" id="step-3" aria-labelledby="title-3">
+        <p class="step-kicker">Step 03 of 07</p>
+        <h2 id="title-3">Set record defaults and hierarchy access</h2>
+        <p class="step-intent">Decide which records users can access before additional sharing is applied.</p>
+        <details class="journey-accordion accordion-overview" id="step-3-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p><strong>Organization-wide defaults (OWD)</strong> establish baseline access to other users’ records. Choose the setting for each object, with separate internal and external defaults where supported.</p>
+    <p>Decide ownership and parent relationships alongside that baseline. Review hierarchy access explicitly rather than assuming the company organization chart is the right data-access model.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.security_sharing_owd_about.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Organization-wide defaults</a> · <a href="https://help.salesforce.com/s/articleView?id=security_controlling_access_using_hierarchies.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Role hierarchy</a></p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-3-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Choose a baseline for each object</h4>
+    <p>Open <strong>Setup → Sharing Settings</strong>. Review the choices available for the object and the access intended for the most restricted relevant user.</p><div class="table-wrap" role="region" aria-label="Common OWD choices; available settings vary by object" tabindex="0"><table class="reference-table "><caption>Common OWD choices; available settings vary by object</caption><thead><tr><th scope="col">Requirement for other users’ records</th><th scope="col">Baseline to consider</th></tr></thead><tbody><tr><td>Records should require a separate access reason.</td><td>Private</td></tr><tr><td>Everyone in this population may read; editing needs an additional grant.</td><td>Public Read Only</td></tr><tr><td>Everyone in this population may read and edit.</td><td>Public Read/Write</td></tr><tr><td>Access should follow a parent relationship that supports it.</td><td>Controlled by Parent</td></tr></tbody></table></div>
+    <p class="footnote">Object permissions still apply. These settings are not a complete list of options for every object.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.security_sharing_owd_about.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Organization-wide defaults</a></p>
+    <h4>Check ownership and parent relationships</h4>
+    <p>Identify who owns the records, whether queues are appropriate for supported objects, and what happens on transfer. Inspect master-detail and standard implicit-sharing behavior. An ordinary lookup or an external-ID match is not, by itself, proof of an access grant.</p>
+    <p>Review Accounts and related Contacts, Opportunities and Cases together. Test the parent and child access created by the selected model.</p><p class="sources">Salesforce resources: <a href="https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-sharing-architecture.html" target="_blank" rel="noopener noreferrer">Platform Sharing Architecture</a></p>
+    <h4>Design hierarchy access deliberately</h4>
+    <p>Place users in roles based on the visibility they need. On custom objects, review <strong>Grant Access Using Hierarchies</strong>. Turning it off removes that access route; other applicable grants can still provide access. Hierarchy does not supply missing object or field permissions.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=security_controlling_access_using_hierarchies.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Role hierarchy</a></p>
+    <h4>Plan the change before applying it</h4>
+    <p>Check existing sharing rules, integrations and automation before tightening a baseline. Test with representative data and user roles. Allow for sharing recalculation and inspect the resulting access before proceeding with the next migration batch.</p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-3-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>Private does not mean “owner only”</h4><p>A custom <strong>Review</strong> object is Private and hierarchy access is disabled. A reviewer receives an explicit sharing grant for a record. The reviewer can still read it if their object permissions allow; disabling hierarchy did not remove that separate grant.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=security_controlling_access_using_hierarchies.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Role hierarchy</a></p></div><div class="example"><h4>Record access does not supply field access</h4><p>A manager receives access to an Opportunity through the role hierarchy. If no profile or permission-set grant permits that manager to read Commission, hierarchy access does not make the field readable.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.users_profiles_field_perms.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Field permissions</a></p></div></div>
+        </details>
+      </section><section class="step" id="step-4" aria-labelledby="title-4">
+        <p class="step-kicker">Step 04 of 07</p>
+        <h2 id="title-4">Share records with the people who need them</h2>
+        <p class="step-intent">Choose a sharing mechanism that follows the business relationship and can be maintained.</p>
+        <details class="journey-accordion accordion-overview" id="step-4-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Give each additional record grant a clear reason: team responsibility, a defined record category, a named collaboration or another business relationship.</p>
+    <p><strong>Sharing rules open access.</strong> They cannot take away access already provided by another route. Keep permission set groups, which bundle capabilities, distinct from public groups used as sharing recipients.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.security_about_sharing_rules.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Sharing rules</a></p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-4-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Match the mechanism to the requirement</h4><div class="table-wrap" role="region" aria-label="Select the mechanism for the relationship" tabindex="0"><table class="reference-table "><caption>Select the mechanism for the relationship</caption><thead><tr><th scope="col">Requirement</th><th scope="col">Mechanism to consider</th></tr></thead><tbody><tr><td>Visibility up the management data hierarchy</td><td>Role hierarchy</td></tr><tr><td>A predictable set of owners or record values</td><td>Owner-based or criteria-based sharing rule</td></tr><tr><td>Named colleagues collaborating on a supported record</td><td>Account, Opportunity or Case team</td></tr><tr><td>Sales coverage organized by territory</td><td>Sales Territories and its sharing model</td></tr><tr><td>A specific one-off collaboration</td><td>Manual sharing</td></tr><tr><td>A relationship that standard mechanisms cannot express</td><td>Programmatic sharing with explicit grant and removal logic</td></tr></tbody></table></div><p class="sources">Salesforce resources: <a href="https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-sharing-architecture.html" target="_blank" rel="noopener noreferrer">Platform Sharing Architecture</a></p>
+    <h4>Configure the recipients and access level</h4>
+    <p>For a sharing rule, identify the record population, recipient role or group, and Read Only or Read/Write level. Verify group membership and any included subordinates. Give the rule a description explaining the business requirement.</p>
+    <p>Use supported teams for record-specific collaboration. Check related Account access and the actual team access level, rather than treating a team-role label as a permission grant.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.security_about_sharing_rules.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Sharing rules</a> · <a href="https://help.salesforce.com/s/articleView?id=salesteam_def.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Opportunity Teams</a></p>
+    <h4>Define what removes the access</h4>
+    <p>Document the event that ends the grant: a changed record attribute, removed group or team membership, completed assignment or approved expiry. After removal, check whether another access route still applies.</p>
+    <p>For manual shares, inspect <strong>Keep manual shares when transferring records</strong> and test owner transfer. Current Salesforce behavior depends on this setting and the transfer scenario.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.manual_sharing_considerations_lex.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Manual sharing considerations</a></p>
+    <h4>Keep custom sharing maintainable</h4>
+    <p>When code creates shares, implement removal and repair as well as creation. Test relationship changes, ownership changes, duplicate requests and bulk updates. Review the relevant share object and supported sharing reasons before choosing an implementation.</p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-4-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>Criteria-based sharing</h4><p>A custom <strong>Project</strong> object is Private. Share Projects with <strong>Region = East</strong> to an <strong>East Support</strong> public group as Read Only. Members gain a record-sharing route to those Projects; object and field permissions still apply.</p><p class="footnote">Illustrative configuration using standard criteria-based sharing.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.security_about_sharing_rules.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Sharing rules</a></p></div><div class="example"><h4>Opportunity team</h4><p>A specialist needs to work on one Opportunity. Add the specialist to that Opportunity’s team with the appropriate access. When the assignment ends, remove the team membership and check for any remaining access through other routes.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=salesteam_def.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Opportunity Teams</a></p></div><div class="example"><h4>Two different kinds of group</h4><p>A <strong>permission set group</strong> can bundle the permissions to read Projects. An <strong>East Support public group</strong> can be the recipient of a rule sharing particular Project records. Both decisions may be needed.</p></div></div>
+        </details>
+      </section><section class="step" id="step-5" aria-labelledby="title-5">
+        <p class="step-kicker">Step 05 of 07</p>
+        <h2 id="title-5">Restrict sensitive access and secure other access paths</h2>
+        <p class="step-intent">Review restriction rules, external and guest access, and the context in which automation runs.</p>
+        <details class="journey-accordion accordion-overview" id="step-5-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Check whether the combined grants expose more data than intended. Use <strong>restriction rules</strong> for suitable requirements on supported objects, and examine external access and custom execution paths separately.</p>
+    <p><strong>Scoping rules</strong> help users focus on records. They do not withdraw access to other records the user is authorized to see.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.security_restriction_rule.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction rules</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.security_scoping_rule.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Scoping rules</a></p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-5-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Apply restriction rules to a specific requirement</h4>
+    <p>On a supported object, define which users the rule applies to and which records remain accessible to them. Make user criteria unambiguous. Do not create overlapping restriction/scoping rules for the same object and user expecting them to combine.</p>
+    <p>Test the actual access paths. System-mode code and specified broad record permissions bypass restriction rules. A parent restriction does not automatically secure child objects, and activity views have documented limitations.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.security_restriction_rule.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction rules</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.security_restriction_rule_considerations.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction-rule considerations</a></p>
+    <h4>Secure authenticated external-user access</h4>
+    <p>Decide whether a customer should see only their own records or their organization’s records. Check the external-user type and supported sharing mechanism. Where sharing sets fit, map the user’s Contact or Account to the matching relationship on the target record.</p>
+    <p>Test one customer’s access to another customer’s record, including direct URLs, files and the services used by the site.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=customer_portal_setting_light_users.htm&amp;language=en_US&amp;type=0" target="_blank" rel="noopener noreferrer">Sharing sets for external users</a></p>
+    <h4>Secure guest-user access</h4>
+    <p>Review each site anonymously. Guest record access is private; deliberate read-only access can be provided through guest-user sharing rules. Manual and Apex managed sharing are not alternatives for granting guest access.</p>
+    <p>Keep rule criteria narrow and review guest object and field permissions. A guest sharing rule exposes matching records to unauthenticated visitors. Inspect public files and any custom service that returns data.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=networks_secure_guest_user_sharing.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Guest-user record access</a></p>
+    <h4>Check Apex, Flow, integrations and agent actions</h4>
+    <p>Record the running identity, launch method and execution context. In Apex, check the class/API version, sharing declaration and database-operation access mode. <code>with sharing</code> addresses record sharing; object and field checks also need to be enforced through the appropriate operation mode or explicit controls.</p>
+    <p>Inspect Flow’s run context and callers. A flow or agent action that invokes elevated automation needs an authorization review of that path. Use narrowly scoped integration identities and permissions instead of assigning System Administrator to make an integration work.</p><p class="sources">Salesforce resources: <a href="https://developer.salesforce.com/docs/platform/lwc/guide/apex-security.html" target="_blank" rel="noopener noreferrer">Secure Apex classes</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.flow_distribute_context.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Flow run context</a></p>
+    <h4>Review other ways sensitive information can appear</h4>
+    <p>Include reports, dashboard running users, files and public links in the access review. Check formulas and custom components that expose derived information: a formula can reveal a value based on a field the user cannot read directly.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=sf.users_profiles_field_perms.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Field permissions</a></p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-5-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>Restriction rule: only Tasks the user owns</h4><p>For users with a selected profile, keep only otherwise accessible Tasks owned by the current user. Salesforce’s documented example selects the profile in user criteria and compares <code>Task.Owner:User.Id</code> with <code>$User.Id</code> in record criteria.</p><p class="footnote">This filters existing access; it does not grant new access. Apply the documented bypass and activity-view considerations.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.security_restriction_rule_examples.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Salesforce restriction-rule examples</a></p></div><div class="example"><h4>Scoping rule: focus the working list</h4><p>Focus a sales rep’s Account list on Accounts they own, using the scoped view. Other Accounts already authorized by the sharing model remain accessible. This is a working-view filter.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.security_scoping_rule.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Scoping rules</a></p></div><div class="example"><h4>External sharing: customer account</h4><p>A sharing set maps a site user’s Account to the Account on a Case. Matching Cases become accessible at the configured level. This is appropriate only if the intended requirement is account-wide access, rather than access limited to the individual contact.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=customer_portal_setting_light_users.htm&amp;language=en_US&amp;type=0" target="_blank" rel="noopener noreferrer">Sharing sets for external users</a></p></div></div>
+        </details>
+      </section><section class="step" id="step-6" aria-labelledby="title-6">
+        <p class="step-kicker">Step 06 of 07</p>
+        <h2 id="title-6">Test access and migrate safely</h2>
+        <p class="step-intent">Check intended access and intended denials, then move users in controlled batches.</p>
+        <details class="journey-accordion accordion-overview" id="step-6-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Test with representative non-admin users. Confirm that required work succeeds and that prohibited records, fields and actions remain inaccessible.</p>
+    <p>Migrating permissions from a profile to a permission set does not by itself reduce access. Review which grants are still justified before assigning the replacement.</p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-6-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Use a short access-check table</h4>
+    <div class="table-wrap" role="region" aria-label="Does access match the requirement?" tabindex="0"><table class="reference-table template-table"><caption>Does access match the requirement?</caption><thead><tr><th scope="col">Check</th><th scope="col">Expected</th><th scope="col">Actual</th></tr></thead><tbody><tr><td>Sales rep opens an assigned Opportunity</td><td>Allowed</td><td></td></tr><tr><td>Sales rep reads Commission</td><td>Denied</td><td></td></tr><tr><td>&nbsp;</td><td></td><td></td></tr></tbody></table></div>
+    <p class="footnote">Repeat relevant checks in the UI, reports, APIs and automation actually used. Add team or ownership changes as further rows when they apply.</p>
+    <p class="tools"><button type="button" class="text-button" data-print-template="checks">Print blank access-check template</button></p>
+    <h4>Find the source of an unexpected grant</h4>
+    <p>Open <strong>Setup → Users → user → View Summary</strong>. Use <strong>Access Granted By</strong> to trace a permission to its profile, permission set or group. Use <strong>Object Manager → object → Field Access</strong> for a field-focused review.</p>
+    <p>Inspect record-sharing reasons as well. A permission summary is not a complete record-access test. In particular, <code>UserRecordAccess</code> does not account for blocking by restriction rules.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.users_access_summary.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">User Access Summary</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.users_field_perms_summary.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Field Access Summary</a> · <a href="https://help.salesforce.com/s/articleView?id=platform.security_restriction_rule_considerations.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Restriction-rule considerations</a></p>
+    <h4>Prepare the replacement permissions</h4>
+    <p>The <strong>User Access and Permissions Assistant (UAPA)</strong> can convert a profile to an editable permission set. Its documented conversion excludes record types and tab access. Review the output against the required work instead of treating conversion as a complete migration.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.perm_uapa_convert_profile_to_a_permission_set.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Profile conversion with UAPA</a></p>
+    <h4>Pilot, then expand</h4>
+    <p>Preserve the existing configuration and assignments. Prepare the minimum-profile settings and replacement permission sets/groups, then pilot one persona in a suitable test environment. Check applications, reports, integrations, automation and managed-package functions used by that persona.</p>
+    <p>Remove obsolete grants during the pilot and rerun the checks. Prepare rollback instructions before production rollout. Migrate in manageable batches, allowing for group/sharing recalculation and investigation of unexpected results.</p>
+    <h4>How Guardian helps with investigation</h4>
+    <p>Use <strong>Who Sees What Explorer</strong> to investigate supported user, object, field and record-access reasons. Its Records lens can help explain which users can access a selected record and why. Use that evidence alongside the actual access checks.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.sc_ext_who_sees_what_explorer_tab.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Who Sees What Explorer</a></p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-6-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>Trace an unexpected field grant</h4><p>A sales rep can read Commission despite the profile leaving it ungranted. Inspect the sources of field access and find an old direct permission set. Remove the unintended grant at its source, then repeat the field-access check.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.users_access_summary.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">User Access Summary</a></p></div><div class="example"><h4>Test a move as well as a new assignment</h4><p>A user moves from East Support to West Support. Test that the user gains the required West access and loses the East access that is no longer justified. Include old public-group memberships, direct assignments and exceptional shares in the review.</p></div></div>
+        </details>
+      </section><section class="step" id="step-7" aria-labelledby="title-7">
+        <p class="step-kicker">Step 07 of 07</p>
+        <h2 id="title-7">Maintain access as users and data change</h2>
+        <p class="step-intent">Keep assignments, sharing relationships and exceptions aligned with current responsibilities.</p>
+        <details class="journey-accordion accordion-overview" id="step-7-overview">
+          <summary><h3>Overview</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><p>Define how access is granted, changed and removed when people join, move teams or leave. Assign owners to permission groups, public groups, sharing rules and exceptional access.</p>
+    <p>Recheck affected access when fields, relationships, applications or automation change. Keep the focus on unexplained grants and requirements that no longer hold.</p></div>
+        </details><details class="journey-accordion accordion-implementation" id="step-7-implementation">
+          <summary><h3>Illustrative implementation steps</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><h4>Automate explicit grant and removal actions</h4>
+    <p>Use <strong>User Access Policies</strong> to grant or revoke supported assignments when qualifying user records are created or updated. Define the criteria, actions and policy order. Where multiple active policies match, the lowest order applies.</p>
+    <p>Include removal of old assignments in the mover/leaver design. Do not assume that a user ceasing to match a previous grant condition automatically supplies the revocation behavior you need. Inspect policy results after a controlled user change.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.perm_active_user_access_policy.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Automated User Access Policies</a></p>
+    <h4>Review exceptions and remaining access</h4>
+    <p>Record a reason and review date for exceptional grants. Revisit broad permissions, direct permission-set assignments, team memberships, public groups and manually maintained shares. Confirm that an exception still supports current work.</p>
+    <h4>Recheck after configuration changes</h4>
+    <p>When a field is added, review its permissions and any formulas that expose it. When ownership, roles or relationships change, test the affected record populations. Recheck integration and agent actions after changes to their identity, code or Flow context.</p>
+    <p>Track a small set of useful findings: unexpected grants, expired exceptions, obsolete assignments after a move and failed access checks. Record the action taken and the resulting access.</p>
+    <h4>How Guardian helps with permission drift</h4>
+    <p>Configure supported <strong>Security Center Security Insights alerts</strong> for high-risk permission changes. For example, monitor a new <strong>Modify All Data</strong> grant and inspect the user and configuration supplying it.</p>
+    <p>Route the alert to a reviewer and check its timing against the analysis schedule. An alert supports investigation; it does not itself prevent the assignment. Review object and record-sharing changes as part of the wider access-maintenance process.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.sc_ext_create_alerts.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Security Insights alerts</a></p></div>
+        </details><details class="journey-accordion accordion-examples" id="step-7-examples">
+          <summary><h3>Simple examples</h3><span class="accordion-icon" aria-hidden="true"></span></summary>
+          <div class="accordion-body"><div class="example"><h4>User Access Policy: remove the old assignment</h4><p>A user’s Department changes from Sales to Support. A matching policy can explicitly grant the Support permission set group and revoke the Sales group. Check remaining direct assignments and other access routes separately.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.perm_active_user_access_policy.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Automated User Access Policies</a></p></div><div class="example"><h4>Permission drift: a new broad grant</h4><p>A user receives Modify All Data through a newly assigned permission set. A configured Security Insights alert identifies the change. The reviewer checks the business reason, removes an unintended grant and confirms the user’s resulting access.</p><p class="sources">Salesforce resources: <a href="https://help.salesforce.com/s/articleView?id=platform.sc_ext_create_alerts.htm&amp;language=en_US&amp;type=5" target="_blank" rel="noopener noreferrer">Security Insights alerts</a></p></div></div>
+        </details>
+      </section></div>
+      </div>
+    </main>
+    <footer class="footer"><div class="shell">
+      <p>This is not official Salesforce documentation. This is provided as an illustrative example only. Please refer to the official Salesforce resources at <a href="https://www.salesforce.com/" target="_blank" rel="noopener noreferrer">salesforce.com</a> for authoritative guidance.</p>
+      <p class="review-date">Salesforce resources reviewed 24 September 2026. Feature behavior depends on the object, access path and applicable release.</p>
+    </div></footer>
+  </div>
+  <section class="print-template" id="print-ideation" aria-label="Who needs access to what?">
+      <h1>Who needs access to what?</h1><p class="print-subtitle">Access ideation template</p>
+      <table><thead><tr><th scope="col">Who?</th><th scope="col">Which data?</th><th scope="col">Can do</th><th scope="col">Cannot do</th></tr></thead><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
+      <p class="print-footnote">Add one row per user group, integration or agent. Add particular records, fields, exceptions or expiry conditions only when needed.</p>
+      <p class="print-footer">Illustrative Salesforce sharing-model template. This is not official Salesforce documentation.</p>
+    </section>
+  <section class="print-template" id="print-checks" aria-label="Does access match the requirement?">
+      <h1>Does access match the requirement?</h1><p class="print-subtitle">Access-check template</p>
+      <table><thead><tr><th scope="col">Check</th><th scope="col">Expected</th><th scope="col">Actual</th></tr></thead><tbody><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
+      <p class="print-footnote">Repeat relevant checks in the UI, reports, APIs and automation actually used. Add team changes, ownership changes or exceptional access as further rows when they apply.</p>
+      <p class="print-footer">Illustrative Salesforce sharing-model template. This is not official Salesforce documentation.</p>
+    </section>
+  <script>
+(()=>{
+  'use strict';
+  const links=Array.from(document.querySelectorAll('.journey-nav a'));
+  const sections=Array.from(document.querySelectorAll('.step'));
+  const panels=Array.from(document.querySelectorAll('.journey-accordion'));
+  const body=document.body;
+  let printing=false,printState=null,pending=false;
+
+  function mark(id){
+    links.forEach(link=>{
+      if(link.getAttribute('href')==='#'+id)link.setAttribute('aria-current','step');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function update(){
+    if(printing||!sections.length)return;
+    let current=sections[0];
+    for(const section of sections){
+      if(section.getBoundingClientRect().top<=120)current=section;else break;
+    }
+    if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)current=sections[sections.length-1];
+    mark(current.id);
+  }
+  function scheduleUpdate(){
+    if(pending)return;
+    pending=true;
+    window.requestAnimationFrame(()=>{pending=false;update();});
+  }
+  function revealHash(){
+    const id=decodeURIComponent(window.location.hash.slice(1));
+    const target=document.getElementById(id);
+    if(target&&target.classList.contains('journey-accordion')){
+      target.open=true;
+      window.requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+    }
+    scheduleUpdate();
+  }
+  links.forEach(link=>link.addEventListener('click',()=>mark(link.getAttribute('href').slice(1))));
+  panels.forEach(panel=>panel.addEventListener('toggle',scheduleUpdate));
+  window.addEventListener('scroll',scheduleUpdate,{passive:true});
+  window.addEventListener('resize',scheduleUpdate);
+  window.addEventListener('hashchange',revealHash);
+  window.addEventListener('load',revealHash);
+
+  function preparePrint(){
+    if(printState!==null)return;
+    printing=true;
+    printState=panels.map(p=>p.open);
+    if(!body.dataset.printTemplate)panels.forEach(p=>{p.open=true;});
+  }
+  function restorePrint(){
+    if(printState!==null){
+      panels.forEach((p,i)=>{p.open=printState[i];});
+      printState=null;
+    }
+    delete body.dataset.printTemplate;
+    printing=false;
+    scheduleUpdate();
+  }
+  document.querySelectorAll('[data-print-template]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      body.dataset.printTemplate=button.dataset.printTemplate;
+      preparePrint();
+      window.print();
+    });
+  });
+  document.getElementById('print-guide').addEventListener('click',()=>{
+    delete body.dataset.printTemplate;
+    preparePrint();
+    window.print();
+  });
+  window.addEventListener('beforeprint',preparePrint);
+  window.addEventListener('afterprint',restorePrint);
+  const printMedia=window.matchMedia?window.matchMedia('print'):null;
+  if(printMedia&&printMedia.addEventListener){
+    printMedia.addEventListener('change',event=>{if(event.matches)preparePrint();else restorePrint();});
+  }
+  revealHash();
+})();
+</script>
+</body>
+</html>
